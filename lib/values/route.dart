@@ -1,9 +1,12 @@
 import 'package:doan_tn/auth/login/view/login_screen.dart';
 import 'package:doan_tn/auth/register/view/register_view.dart';
 import 'package:doan_tn/home/home_admin/view/widget/product_detail.dart';
+import 'package:doan_tn/home/model/product_reponse.dart';
 import 'package:flutter/material.dart';
 
+import '../home/home_admin/view/add_product_screen.dart';
 import '../home/home_admin/view/admin_page.dart';
+import '../home/home_admin/view/widget/product_crud.dart';
 import '../home/home_user/view/user_page.dart';
 
 
@@ -21,14 +24,14 @@ class AppRoute {
 
       case '/User':
         return _materialRoute(const UserPage());
-      //
-      case '/Product':
-        return _materialRoute(ProductDetailScreen(
-            arguments: settings.arguments as ProductDetailArguments));
 
+      // case '/Product':
+      //   return _materialRoute(ProductDetailScreen(
+      //       arguments: settings.arguments as ProductDetailArguments));
+      //
       // case '/ProductCrud':
       //   return _materialRoute(
-      //       ProductCrudPage(product: settings.arguments as ProductModel?));
+      //       const AddProductScreen());
 
       default:
         return _materialRoute(const ErrorPage());

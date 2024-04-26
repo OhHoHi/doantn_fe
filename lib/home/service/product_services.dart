@@ -1,11 +1,13 @@
+import 'dart:ffi';
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:doan_tn/home/model/product_add_response.dart';
+import 'package:doan_tn/home/model/product_edit_request.dart';
 import 'package:doan_tn/home/model/product_reponse.dart';
 import '../../base/services/base_service.dart';
 import '../../base/services/services_url.dart';
-import '../model/product_request.dart';
+import '../model/product_add_request.dart';
 
 class ProductService extends BaseService {
   ProductService(Dio client) : super(client);
@@ -45,41 +47,136 @@ class ProductService extends BaseService {
     return results.data;
   }
 
-  Future<ProductAddResponse> addProduct(ProductRequest request ,List<File> images) async {
+  // Future<ProductAddResponse> addProduct(ProductRequest request ,List<File> images) async {
+  //
+  //   List<MultipartFile> imageFiles = [];
+  //
+  //   // Chuyển đổi danh sách ảnh từ File sang MultipartFile
+  //   for (var image in images) {
+  //     imageFiles.add(
+  //       await MultipartFile.fromFile(image.path),
+  //     );
+  //   }
+  //
+  //   FormData formData = FormData.fromMap({
+  //     'name': request.name,
+  //     'description': request.description,
+  //     'images': imageFiles,
+  //     'price': request.price,
+  //     'brandsName': request.brandsName,
+  //     'status': request.status,
+  //     'color': request.color,
+  //     'chatLieuKhungVot': request.chatLieuKhungVot,
+  //     'chatLieuThanVot': request.chatLieuThanVot,
+  //     'trongLuong': request.trongLuong,
+  //     'doCung': request.doCung,
+  //     'diemCanBang': request.diemCanBang,
+  //     'chieuDaiVot': request.chieuDaiVot,
+  //     'mucCangToiDa': request.mucCangToiDa,
+  //     'chuViCanCam': request.chuViCanCam,
+  //     'trinhDoChoi': request.trinhDoChoi,
+  //     'noiDungChoi': request.noiDungChoi,
+  //   });
+  //   final result = await Dio().post(
+  //     ServicesUrl.addProduct,
+  //     data: formData,
+  //   );
+  //   return ProductAddResponse.fromJson(result.data!);
+  // }
 
-    List<MultipartFile> imageFiles = [];
+  Future<bool> addProduct(ProductRequest request ,List<File> images) async {
+    try{
+      List<MultipartFile> imageFiles = [];
 
-    // Chuyển đổi danh sách ảnh từ File sang MultipartFile
-    for (var image in images) {
-      imageFiles.add(
-        await MultipartFile.fromFile(image.path),
+      // Chuyển đổi danh sách ảnh từ File sang MultipartFile
+      for (var image in images) {
+        imageFiles.add(
+          await MultipartFile.fromFile(image.path),
+        );
+      }
+      FormData formData = FormData.fromMap({
+        'name': request.name,
+        'description': request.description,
+        'images': imageFiles,
+        'price': request.price,
+        'brandsName': request.brandsName,
+        'status': request.status,
+        'color': request.color,
+        'chatLieuKhungVot': request.chatLieuKhungVot,
+        'chatLieuThanVot': request.chatLieuThanVot,
+        'trongLuong': request.trongLuong,
+        'doCung': request.doCung,
+        'diemCanBang': request.diemCanBang,
+        'chieuDaiVot': request.chieuDaiVot,
+        'mucCangToiDa': request.mucCangToiDa,
+        'chuViCanCam': request.chuViCanCam,
+        'trinhDoChoi': request.trinhDoChoi,
+        'noiDungChoi': request.noiDungChoi,
+      });
+        await client.post(
+        ServicesUrl.addProduct,
+        data: formData
       );
+      return true;
+    }catch (e) {
+      // Xử lý ngoại lệ ở đây, nếu cần
+      return false;
     }
-
-    FormData formData = FormData.fromMap({
-      'name': request.name,
-      'description': request.description,
-      'images': imageFiles,
-      'price': request.price,
-      'brandsName': request.brandsName,
-      'status': request.status,
-      'color': request.color,
-      'chatLieuKhungVot': request.chatLieuKhungVot,
-      'chatLieuThanVot': request.chatLieuThanVot,
-      'trongLuong': request.trongLuong,
-      'doCung': request.doCung,
-      'diemCanBang': request.diemCanBang,
-      'chieuDaiVot': request.chieuDaiVot,
-      'mucCangToiDa': request.mucCangToiDa,
-      'chuViCanCam': request.chuViCanCam,
-      'trinhDoChoi': request.trinhDoChoi,
-      'noiDungChoi': request.noiDungChoi,
-    });
-    final result = await Dio().post(
-      ServicesUrl.addProduct,
-      data: formData,
-    );
-    return ProductAddResponse.fromJson(result.data!);
   }
 
+  // Future<ProductResponse> editProduct(ProductEditRequest request ,String id) async {
+  //     FormData formData = FormData.fromMap({
+  //       'name': request.name,
+  //       'description': request.description,
+  //       'price': request.price,
+  //       'brandsName' : request.brandsName,
+  //       'status': request.status,
+  //       'color': request.color,
+  //       'chatLieuKhungVot': request.chatLieuKhungVot,
+  //       'chatLieuThanVot': request.chatLieuThanVot,
+  //       'trongLuong': request.trongLuong,
+  //       'doCung': request.doCung,
+  //       'diemCanBang': request.diemCanBang,
+  //       'chieuDaiVot': request.chieuDaiVot,
+  //       'mucCangToiDa': request.mucCangToiDa,
+  //       'chuViCanCam': request.chuViCanCam,
+  //       'trinhDoChoi': request.trinhDoChoi,
+  //       'noiDungChoi': request.noiDungChoi,
+  //     });
+  //     final result = await Dio().put(
+  //       "http://10.0.2.2:8080/products/edit/$id",
+  //       data: formData,
+  //     );
+  //     return ProductResponse.fromJson(result.data!);
+  //
+  // }
+  Future<bool> editProduct(ProductEditRequest request ,int id) async {
+    try{
+       await client.put(
+        "http://10.0.2.2:8080/products/edit/$id",
+        data: {
+          'name': request.name,
+          'description': request.description,
+          'price': request.price,
+          'brandsName' : request.brandsName,
+          'status': request.status,
+          'color': request.color,
+          'chatLieuKhungVot': request.chatLieuKhungVot,
+          'chatLieuThanVot': request.chatLieuThanVot,
+          'trongLuong': request.trongLuong,
+          'doCung': request.doCung,
+          'diemCanBang': request.diemCanBang,
+          'chieuDaiVot': request.chieuDaiVot,
+          'mucCangToiDa': request.mucCangToiDa,
+          'chuViCanCam': request.chuViCanCam,
+          'trinhDoChoi': request.trinhDoChoi,
+          'noiDungChoi': request.noiDungChoi,
+        },
+      );
+      return true;
+    }catch (e) {
+      // Xử lý ngoại lệ ở đây, nếu cần
+      return false;
+    }
+  }
 }

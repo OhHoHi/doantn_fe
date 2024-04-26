@@ -15,12 +15,12 @@ class ProductCard extends StatelessWidget {
   final ProductResponse product;
   final bool isAdmin;
 
-  void _navigatorToProductDetailPage(
-      BuildContext context, ProductResponse productResponse, bool isAdmin) {
-    Navigator.pushNamed(context, '/Product',
-        arguments:
-        ProductDetailArguments(product: product , isAdmin: isAdmin, productProvider: productProvider,));
-  }
+  // void _navigatorToProductDetailPage(
+  //     BuildContext context, ProductResponse productResponse, bool isAdmin) {
+  //   Navigator.pushNamed(context, '/Product',
+  //       arguments:
+  //       ProductDetailArguments(product: product , isAdmin: isAdmin, productProvider: productProvider,));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,10 @@ class ProductCard extends StatelessWidget {
       child: InkWell(
         borderRadius: const BorderRadius.all(Radius.circular(25)),
         onTap: () {
-          _navigatorToProductDetailPage(context, product, isAdmin);
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => ProductDetailScreen(
+              productProvider: productProvider, product: product, isAdmin: isAdmin,
+              )));
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),

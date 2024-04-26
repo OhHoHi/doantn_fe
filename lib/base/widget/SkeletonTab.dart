@@ -37,6 +37,13 @@ class SkeletonTab extends StatelessWidget {
         centerTitle: true,
         toolbarHeight: 100,
         automaticallyImplyLeading: isBack ? true : false,
+        leading: isBack == true
+            ? BackButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          color: Colors.white,
+        ) : const SizedBox(),
         actions: [
           actionsWidgets != null ? actionsWidgets! : const SizedBox(),
         ],
@@ -59,7 +66,8 @@ class SkeletonTab extends StatelessWidget {
         ),
       ),
 
-      body: ProgressHUD(
+      body:
+      ProgressHUD(
         // indicatorColor: Colors.lightBlue,
         // backgroundColor: Colors.white,
         // textStyle: const TextStyle(

@@ -44,14 +44,6 @@ class _BodyHomeViewState extends State<BodyAdminProductTab> {
             if (pro.isLoading) {
               print('bat dau load');
               pro.messagesLoading = 'Đang lấy dữ liệu .....';
-              // WidgetsBinding.instance.addPostFrameCallback((_) {
-              //   ProgressHUD.of(context)
-              //       ?.showWithText(pro.messagesLoading);
-              //   Future.delayed(const Duration(seconds: 1), () {
-              //     ProgressHUD.of(context)
-              //         ?.showWithText(pro.messagesLoading);
-              //   });
-              // });
             }
             return const SizedBox();
           },
@@ -80,19 +72,6 @@ class _BodyHomeViewState extends State<BodyAdminProductTab> {
                 ProgressHUD.of(context)?.dismiss();
               });
             }
-            // return Expanded(
-            //   child: GridView.builder(
-            //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            //       crossAxisCount: 2, // Số cột trong lưới
-            //       crossAxisSpacing: 5, // Khoảng cách giữa các cột
-            //       mainAxisSpacing: 5, // Khoảng cách giữa các dòng
-            //     ),
-            //     itemCount: pro.listProduct.length,
-            //     itemBuilder: (context, index) {
-            //       return productGridItem(pro.listProduct[index]);
-            //     },
-            //   ),
-            // );
             return SingleChildScrollView(
               padding: const EdgeInsets.all(5),
               child: GridView.builder(
@@ -109,18 +88,6 @@ class _BodyHomeViewState extends State<BodyAdminProductTab> {
                 },
               ),
             );
-            // return Expanded(
-            //   child: ListView.builder(
-            //     itemCount: pro.listProduct.length,
-            //     itemBuilder: (context, index) {
-            //       return Padding(
-            //         padding: const EdgeInsets.symmetric(vertical: 10), // Khoảng cách giữa các item
-            //         child: productGridItem(pro.listProduct[index]),
-            //       );
-            //     },
-            //   ),
-            // );
-
           })
     );
   }

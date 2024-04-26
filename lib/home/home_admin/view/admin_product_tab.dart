@@ -1,3 +1,4 @@
+
 import 'package:doan_tn/base/widget/SkeletonTab.dart';
 import 'package:doan_tn/base/widget/appbar_widget.dart';
 import 'package:doan_tn/home/controller/product_provider.dart';
@@ -12,6 +13,9 @@ import 'add_product_screen.dart';
 class AdminProductTab extends StatelessWidget {
   const AdminProductTab({Key? key}) : super(key: key);
 
+  void _navigateToAddProduct(BuildContext context) {
+    Navigator.pushNamed(context, '/ProductCrud');
+  }
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -29,9 +33,21 @@ class AdminProductTab extends StatelessWidget {
               builder: (_) => AddProductScreen(),
             ),
           );
+          //_navigatorToProductCrudPage(context);
         },
-          child: Icon(Icons.add),
-        ), isBack: false,
+          child:const Icon(
+            Icons.add,
+            size: 25,
+          ),
+        ),
+        // floatingButton: FloatingActionButton(
+        //   onPressed: () => _navigateToAddProduct(context),
+        //   child: const Icon(
+        //     Icons.add,
+        //     size: 25,
+        //   ),
+        // ),
+        isBack: false,
       ),
     );
   }

@@ -1,4 +1,5 @@
 
+import 'package:doan_tn/home/home_admin/view/admin_page.dart';
 import 'package:doan_tn/home/home_user/view/home_user_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -101,19 +102,19 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                         SecureStorage().delete('password');
                       }
                       if(_checkAdmin){
-                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        //     builder: (_) => HomeAdminView(
-                        //       // data: loginProvider.user!,
-                        //     )));
-                        _navigatorToAdminPage(context);
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (_) => AdminPage(
+                              // data: loginProvider.user!,
+                            )));
+                       // _navigatorToAdminPage(context);
                         print('load thanh cong');
                       }
                       else{
-                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        //     builder: (_) => HomeUserView(
-                        //       // data: loginProvider.user!,
-                        //     )));
-                        _navigatorToUserPage(context);
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (_) => HomeUserView(
+                              // data: loginProvider.user!,
+                            )));
+                       // _navigatorToUserPage(context);
                         print('load thanh cong');
                       }
                     });
