@@ -8,12 +8,14 @@ class AppBarWidget extends StatelessWidget {
         required this.child,
         this.tittle,
         this.haveNotiButton,
-        this.haveBackButton});
+        this.haveBackButton, this.floatButton, this.bottomBar});
 
   final Widget child;
   final Widget? tittle;
   final bool? haveNotiButton;
   final bool? haveBackButton;
+  final Widget? floatButton;
+  final Widget? bottomBar;
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +27,6 @@ class AppBarWidget extends StatelessWidget {
         shadowColor: const Color.fromRGBO(0, 0, 0, 0.02),
         actions: <Widget>[
           haveNotiButton == true
-              // ? IconButton(
-              // onPressed: () {
-              //   Navigator.of(context).push(
-              //       MaterialPageRoute(builder: (_) => ListNotifyScreen()));
-              // },
-              // icon: SvgPicture.asset(AppAssets.icpNotification))
-              // :
           ? SizedBox() :
           const SizedBox(),
         ],
@@ -78,6 +73,8 @@ class AppBarWidget extends StatelessWidget {
               },
             ),
           )),
+      floatingActionButton:(floatButton != null) ?floatButton : const SizedBox(),
+      bottomNavigationBar: (bottomBar != null) ?bottomBar : const SizedBox(),
     );
   }
 }

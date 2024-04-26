@@ -1,8 +1,9 @@
 
+import 'package:doan_tn/home/home_user/view/home_user_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../base/controler/base_provider.dart';
-import '../../../../home/view/home_view.dart';
+import '../../../../home/home_admin/view/admin_product_tab.dart';
 import '../../../../values/assets.dart';
 import '../../../../values/colors.dart';
 import '../../../register/view/register_view.dart';
@@ -23,8 +24,21 @@ class LoginBodyWidget extends StatefulWidget {
 
 class _LoginBodyWidgetState extends State<LoginBodyWidget> {
 
+  void _navigatorToRegisterPage(BuildContext context) {
+    Navigator.pushNamed(context, '/Register');
+  }
+
+  void _navigatorToAdminPage(BuildContext context) {
+    Navigator.pushNamed(context, '/Admin');
+  }
+
+  void _navigatorToUserPage(BuildContext context) {
+    Navigator.pushNamed(context, '/User');
+  }
+
   bool _showPass = false;
   bool? _isChecked = false;
+  bool _checkAdmin = false;
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -86,11 +100,22 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                         SecureStorage().delete('name');
                         SecureStorage().delete('password');
                       }
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (_) => HomeView(
-                           // data: loginProvider.user!,
-                          )));
-                      print('load thanh cong');
+                      if(_checkAdmin){
+                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        //     builder: (_) => HomeAdminView(
+                        //       // data: loginProvider.user!,
+                        //     )));
+                        _navigatorToAdminPage(context);
+                        print('load thanh cong');
+                      }
+                      else{
+                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        //     builder: (_) => HomeUserView(
+                        //       // data: loginProvider.user!,
+                        //     )));
+                        _navigatorToUserPage(context);
+                        print('load thanh cong');
+                      }
                     });
                   } else if (value == Status.error) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -282,6 +307,12 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                     ),
                     GestureDetector(
                       onTap: () {
+                        if(_usernameController.text == "vanchuadau56@gmail.com"){
+                          _checkAdmin = true;
+                        }
+                        else{
+                          _checkAdmin = false;
+                        }
                         provider.login(context, _usernameController.text,
                             _passwordController.text);
                       },
@@ -305,10 +336,11 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                     ),
                     InkWell(
                       onTap: (){
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (_) => RegisterView(
-                              // data: loginProvider.user!,
-                            )));
+                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        //     builder: (_) => RegisterView(
+                        //       // data: loginProvider.user!,
+                        //     )));
+                        _navigatorToRegisterPage(context);
                       },
                       child: const Text("Bạn chưa có tài khoản , bấm vào đây", style: TextStyle(color: Colors.white , decoration: TextDecoration.underline),)
                     ),
