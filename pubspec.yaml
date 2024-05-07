@@ -49,6 +49,8 @@ dev_dependencies:
   image_picker: ^1.0.7
   dotted_border: ^2.1.0
   intl: ^0.17.0 # để hiện thí số tiền theo dạng đẹp
+  refresh_loadmore: ^2.0.5
+
 
 
 

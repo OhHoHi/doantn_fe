@@ -1,11 +1,8 @@
-import 'dart:ffi';
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:doan_tn/home/home_admin/view/profile_tab.dart';
 import 'package:doan_tn/home/model/car_request.dart';
 import 'package:doan_tn/home/model/cart_response.dart';
-import 'package:doan_tn/home/model/product_add_response.dart';
 import 'package:doan_tn/home/model/product_edit_request.dart';
 import 'package:doan_tn/home/model/product_reponse.dart';
 import '../../base/services/base_service.dart';
@@ -15,9 +12,11 @@ import '../model/product_add_request.dart';
 class ProductService extends BaseService {
   ProductService(Dio client) : super(client);
 
-  Future<List<ProductResponse>> getListProduct() async {
-      Response response = await Dio().get(ServicesUrl.listProduct);
-
+  Future<List<ProductResponse>> getListProduct(String sort , int page , int size) async {
+    String url = "${ServicesUrl.listProduct}?page=$page&size=$size";
+      Response response = await Dio().get(url,
+          data:{"sort" : sort},
+      );
       if (response.statusCode == 200) {
         List<dynamic> responseData = response.data;
 

@@ -488,6 +488,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
+  refresh_loadmore:
+    dependency: "direct dev"
+    description:
+      name: refresh_loadmore
+      sha256: "938c40a612de2517143c08412170286b583f1319857479b9bdeb8a2db458b513"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.5"
   shared_preferences:
     dependency: "direct dev"
     description:

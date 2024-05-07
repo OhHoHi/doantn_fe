@@ -109,7 +109,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>with TickerPro
                       TextButton(
                         onPressed: () {
                           widget.productProvider.deleteProduct(widget.product.id);
-                          widget.productProvider.getListProduct();
                           Navigator.of(context).pop(); // Đóng hộp thoại
                           setState(() {
                             isProductDeleted = true; // Đánh dấu là đã xóa sản phẩm

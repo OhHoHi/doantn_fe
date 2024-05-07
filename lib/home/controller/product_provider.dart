@@ -31,6 +31,8 @@ class ProductProvider extends BaseProvider<ProductService> {
 
 
   List<ProductResponse> listProduct = [];
+  List<ProductResponse> listProductDisplay = [];
+
   List<CartResponse> listCart = [];
   bool? checkAdd;
   bool? checkEdit;
@@ -46,6 +48,26 @@ class ProductProvider extends BaseProvider<ProductService> {
   late ProductAddResponse productAddResponse;
   late Map<String, List<Uint8List>> images = {};
 
+
+  late int page = 0;
+  late String sort = "id_desc";
+  late bool canLoadMore;
+  bool refresh = false;
+
+  void resetPage() {
+    page = 0;
+    canLoadMore = true;
+    listProductDisplay = [];
+  }
+
+  void loadMore() {
+    if (canLoadMore) {
+      page += 1;
+      getListProduct();
+    }
+  }
+
+
   Future<void> getListProduct() async {
     resetStatus();
     try {
@@ -53,10 +75,19 @@ class ProductProvider extends BaseProvider<ProductService> {
         statusListProduct = Status.loading;
       });
       //startLoading();
-      listProduct = await service.getListProduct();
+      listProduct = await service.getListProduct(sort , page , 10);
       for (var product in listProduct) {
         //await getImage(product.imageUrls.first); // Lấy ảnh cho sản phẩm đầu tiên trong danh sách ảnh
         await getFirstImageForProduct(product);
+      }
+      if (refresh == true) {
+        listProductDisplay = listProduct;
+        refresh=false;
+      } else {
+        listProductDisplay += listProduct;
+      }
+      if (listProduct.length < 10) {
+        canLoadMore = false;
       }
       finishLoading((){
         statusListProduct = Status.loaded;
