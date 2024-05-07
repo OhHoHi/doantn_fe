@@ -5,6 +5,7 @@ import '../../../base/widget/dialog_base.dart';
 import '../../../values/assets.dart';
 import '../model/login_request.dart';
 import '../model/login_response.dart';
+import '../model/test_luu_user.dart';
 import '../services/login_services.dart';
 import 'package:dio/dio.dart';
 
@@ -12,10 +13,14 @@ class LoginProvider extends BaseProvider<LoginServices> {
   LoginProvider(LoginServices service) : super(service);
   LoginResponse? _user;
   LoginResponse? get user => _user;
-
+  bool? checkAdmin;
   Status statusLogin = Status.none;
   void setUser(LoginResponse? user) {
     _user = user;
+    notifyListeners();
+  }
+  void setUser1(LoginResponse? user) {
+    TempUserStorage.currentUser = user;
     notifyListeners();
   }
 
@@ -28,7 +33,15 @@ class LoginProvider extends BaseProvider<LoginServices> {
       final loginService = LoginServices(DioOption().createDio(addToken: false));
       final user = await loginService.postLogin(request: loginRequest);
 
-      setUser(user);
+      //setUser(user);
+      setUser1(user);
+      if(user.user.roles.first.name == "ROLE_ADMIN"){
+        checkAdmin = true;
+      }
+      else {
+        checkAdmin = false;
+      }
+      print("test o day ne ${user.user.roles.first.name}");
       finishLoading(() {
         statusLogin = Status.loaded;
       });

@@ -1,6 +1,8 @@
 import 'dart:ffi';
 import 'dart:typed_data';
 import 'dart:io';
+import 'package:doan_tn/home/model/car_request.dart';
+import 'package:doan_tn/home/model/cart_response.dart';
 import 'package:doan_tn/home/model/product_add_response.dart';
 import 'package:doan_tn/home/model/product_reponse.dart';
 import 'package:doan_tn/home/model/product_add_request.dart';
@@ -13,41 +15,84 @@ import '../model/product_edit_request.dart';
 
 class ProductProvider extends BaseProvider<ProductService> {
   ProductProvider(ProductService service) : super(service);
-
+  Status statusListProduct = Status.none;
   Status statusAddProduct = Status.none;
   Status statusEditProduct = Status.none;
+  Status statusDeleteProduct = Status.none;
 
-  late List<ProductResponse> listProduct;
+  Status statusListCart = Status.none;
+  Status statusAddCart = Status.none;
+  Status statusDeleteCart = Status.none;
+  Status statusQuantity = Status.none;
+
+
+
+
+
+
+  List<ProductResponse> listProduct = [];
+  List<CartResponse> listCart = [];
   bool? checkAdd;
   bool? checkEdit;
+  bool? checkDelete;
+  bool? checkAddCart;
+  bool? checkDeleteCart;
+  bool? checkIncreaseQuantity;
+  bool? checkDecreaseQuantity;
+
   late ProductResponse productResponse;
 
-  // late Map<String, Uint8List?> images = {};
+
   late ProductAddResponse productAddResponse;
   late Map<String, List<Uint8List>> images = {};
 
   Future<void> getListProduct() async {
     resetStatus();
     try {
-      // startLoading((){
-      //   statusInfo = Status.loading;
-      // });
-      startLoading();
+      startLoading((){
+        statusListProduct = Status.loading;
+      });
+      //startLoading();
       listProduct = await service.getListProduct();
       for (var product in listProduct) {
         //await getImage(product.imageUrls.first); // Lấy ảnh cho sản phẩm đầu tiên trong danh sách ảnh
-        await getImagesForProduct(product);
+        await getFirstImageForProduct(product);
       }
-      // finishLoading((){
-      //   statusInfo = Status.loaded;
-      // });
-      finishLoading();
+      finishLoading((){
+        statusListProduct = Status.loaded;
+      });
+     // finishLoading();
     } on DioException catch (e) {
       messagesError = e.message ?? 'Co loi he thong';
-      // receivedError((){
-      //   statusInfo = Status.error;
-      // });
-      receivedError();
+      receivedError((){
+        statusListProduct = Status.error;
+      });
+      //receivedError();
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return DialogBase(title:"Thất bại", icon: AppAssets.iconFail,content: "Có lỗi hệ thống",);
+      //   },
+      // );
+    }
+  }
+// Phương thức để lấy ảnh đầu tiên cho mỗi sản phẩm
+  Future<void> getFirstImageForProduct(ProductResponse product) async {
+    try{
+      startLoading((){
+        statusListProduct = Status.loading;
+      });
+      final image = await service.getImageFromApi(product.imageUrls.first);
+      images[product.id.toString()] = [image!]; // Lưu ảnh đầu tiên vào danh sách ảnh của sản phẩm
+      finishLoading((){
+        statusListProduct = Status.loaded;
+      });
+    } on DioException catch (e) {
+      messagesError = e.message ?? 'Co loi he thong';
+      receivedError((){
+        statusListProduct = Status.error;
+      });
+      //receivedError();
       // showDialog(
       //   context: context,
       //   builder: (BuildContext context) {
@@ -58,12 +103,33 @@ class ProductProvider extends BaseProvider<ProductService> {
   }
 
   Future<void> getImagesForProduct(ProductResponse product) async {
-    List<Uint8List> productImages = [];
-    for (var imageUrl in product.imageUrls) {
-      final image = await service.getImageFromApi(imageUrl);
-      productImages.add(image!);
+
+    try{
+      startLoading((){
+        statusListProduct = Status.loading;
+      });
+      List<Uint8List> productImages = [];
+      for (var imageUrl in product.imageUrls) {
+        final image = await service.getImageFromApi(imageUrl);
+        productImages.add(image!);
+      }
+      images[product.id.toString()] = productImages;
+      finishLoading((){
+        statusListProduct = Status.loaded;
+      });
+    } on DioException catch (e) {
+      messagesError = e.message ?? 'Co loi he thong';
+      receivedError((){
+        statusListProduct = Status.error;
+      });
+      //receivedError();
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return DialogBase(title:"Thất bại", icon: AppAssets.iconFail,content: "Có lỗi hệ thống",);
+      //   },
+      // );
     }
-    images[product.id.toString()] = productImages;
   }
 
   Future<void> addProduct(
@@ -214,4 +280,228 @@ class ProductProvider extends BaseProvider<ProductService> {
       });
     }
   }
+  Future<void> deleteProduct(int id)async {
+    resetStatus();
+    try {
+      startLoading((){
+        statusDeleteProduct = Status.loading;
+      });
+     // startLoading();
+      checkDelete = await service.deleteProduct(id);
+      if(checkDelete == true){
+        finishLoading(() {
+          statusDeleteProduct = Status.loaded;
+        });
+      }
+      else{
+        receivedError(() {
+          statusDeleteProduct = Status.error;
+        });
+      }
+    } on DioException catch (e) {
+      messagesError = e.message ?? 'Co loi he thong';
+      receivedError((){
+        statusDeleteProduct = Status.error;
+      });
+     // receivedError();
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return DialogBase(title:"Thất bại", icon: AppAssets.iconFail,content: "Có lỗi hệ thống",);
+      //   },
+      // );
+    }
+  }
+
+  // chức năng của người dùng
+  Future<void> getImagesForCartProducts(List<CartResponse> cartItems) async {
+    try {
+      startLoading((){
+        statusListCart = Status.loading;
+      });
+      for (var cartItem in cartItems) {
+        await getFirstImageForProduct(cartItem.product);
+      }
+      finishLoading((){
+        statusListCart = Status.loaded;
+      });
+    } on DioException catch (e) {
+      messagesError = e.message ?? 'Co loi he thong';
+      receivedError((){
+        statusListCart = Status.error;
+      });
+    }
+  }
+  // Phương thức để tính toán tổng giá từ danh sách sản phẩm
+  double _calculateTotalAmount() {
+    double total = 0;
+    for (CartResponse cartResponse in listCart) {
+      total += cartResponse.product.price * cartResponse.quantity;
+    }
+    return total;
+  }
+  double totalAmount = 0;
+  Future<void> getListCart(int userId) async {
+    resetStatus();
+    try {
+      startLoading((){
+        statusListCart = Status.loading;
+      });
+     // startLoading();
+      listCart = await service.getListCart(userId);
+      totalAmount = _calculateTotalAmount(); // Tính toán tổng giá sau khi danh sách sản phẩm đã được cập nhật
+      await getImagesForCartProducts(listCart);
+      finishLoading((){
+        statusListCart = Status.loaded;
+      });
+      //finishLoading();
+    } on DioException catch (e) {
+      messagesError = e.message ?? 'Co loi he thong';
+      receivedError((){
+        statusListCart = Status.error;
+      });
+      //receivedError();
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return DialogBase(title:"Thất bại", icon: AppAssets.iconFail,content: "Có lỗi hệ thống",);
+      //   },
+      // );
+    }
+  }
+  Future<void> addCart(int userId , int productId , int quantity ) async {
+    resetStatus();
+    try {
+      startLoading(() {
+        statusAddCart = Status.loading;
+      });
+      checkAddCart = await service.addCart(CartRequest(userId: userId, productId: productId, quantity: quantity));
+      // startLoading();
+      // message = response;
+
+      // finishLoading(() {
+      //   statusAddProduct = Status.loaded;
+      // });
+      //
+      // receivedError(() {
+      //   statusAddProduct = Status.error;
+      // });
+
+      if(checkAddCart == true){
+        finishLoading(() {
+          statusAddCart = Status.loaded;
+        });
+      }
+      else{
+        receivedError(() {
+          statusAddCart = Status.error;
+        });
+      }
+    } on DioException catch (e) {
+      messagesError = e.message ?? 'Co loi he thong';
+      receivedError(() {
+        statusAddCart = Status.error;
+      });
+    }
+  }
+  Future<void> deleteCart(int id)async {
+    resetStatus();
+    try {
+      startLoading((){
+        statusDeleteCart = Status.loading;
+      });
+      // startLoading();
+      checkDeleteCart = await service.deleteCart(id);
+      if(checkDelete == true){
+        finishLoading(() {
+          statusDeleteCart = Status.loaded;
+        });
+      }
+      else{
+        receivedError(() {
+          statusDeleteCart = Status.error;
+        });
+      }
+    } on DioException catch (e) {
+      messagesError = e.message ?? 'Co loi he thong';
+      receivedError((){
+        statusDeleteCart = Status.error;
+      });
+      // receivedError();
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return DialogBase(title:"Thất bại", icon: AppAssets.iconFail,content: "Có lỗi hệ thống",);
+      //   },
+      // );
+    }
+  }
+  Future<void> increaseQuantity(int cartItemId , int id)async {
+    resetStatus();
+    try {
+      startLoading((){
+        statusQuantity = Status.loading;
+      });
+      // startLoading();
+      checkIncreaseQuantity = await service.increaseQuantity(cartItemId);
+      if(checkIncreaseQuantity == true){
+        getListCart(id);
+        finishLoading(() {
+          statusQuantity = Status.loaded;
+        });
+      }
+      else{
+        receivedError(() {
+          statusQuantity = Status.error;
+        });
+      }
+    } on DioException catch (e) {
+      messagesError = e.message ?? 'Co loi he thong';
+      receivedError((){
+        statusQuantity = Status.error;
+      });
+      // receivedError();
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return DialogBase(title:"Thất bại", icon: AppAssets.iconFail,content: "Có lỗi hệ thống",);
+      //   },
+      // );
+    }
+  }
+
+  Future<void> decreaseQuantity(int cartItemId , int id)async {
+    resetStatus();
+    try {
+      startLoading((){
+        statusQuantity = Status.loading;
+      });
+      // startLoading();
+      checkDecreaseQuantity = await service.decreaseQuantity(cartItemId);
+      if(checkDecreaseQuantity == true){
+        getListCart(id);
+        finishLoading(() {
+          statusQuantity = Status.loaded;
+        });
+      }
+      else{
+        receivedError(() {
+          statusQuantity = Status.error;
+        });
+      }
+    } on DioException catch (e) {
+      messagesError = e.message ?? 'Co loi he thong';
+      receivedError((){
+        statusQuantity = Status.error;
+      });
+      // receivedError();
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return DialogBase(title:"Thất bại", icon: AppAssets.iconFail,content: "Có lỗi hệ thống",);
+      //   },
+      // );
+    }
+  }
+
 }

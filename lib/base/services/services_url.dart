@@ -5,5 +5,7 @@ class ServicesUrl {
   static const String postRegister = "$baseUrl/api/v1/auth/register";
   static const String listProduct = "$baseUrl/products/listProducts";
   static const String addProduct = "$baseUrl/products/addProduct";
+  static const String addCart = "$baseUrl/api/cart/add";
+
 
 }

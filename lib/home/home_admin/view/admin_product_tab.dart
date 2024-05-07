@@ -8,14 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../base/services/dio_option.dart';
-import 'add_product_screen.dart';
+import 'crud_product_screen.dart';
 
 class AdminProductTab extends StatelessWidget {
   const AdminProductTab({Key? key}) : super(key: key);
 
-  void _navigateToAddProduct(BuildContext context) {
-    Navigator.pushNamed(context, '/ProductCrud');
-  }
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -30,7 +27,7 @@ class AdminProductTab extends StatelessWidget {
         floatingButton: FloatingActionButton(onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => AddProductScreen(),
+              builder: (_) => CrudProductScreen(),
             ),
           );
           //_navigatorToProductCrudPage(context);

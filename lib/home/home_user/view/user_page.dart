@@ -1,48 +1,46 @@
+import 'package:doan_tn/home/home_user/view/user_cart_tab.dart';
+import 'package:doan_tn/home/home_user/view/user_product_tab.dart';
 import 'package:flutter/material.dart';
 
 import '../../../values/apppalette.dart';
+import '../../home_admin/view/profile_tab.dart';
 
 
 
 class UserPage extends StatefulWidget {
-  const UserPage({super.key});
+  UserPage({super.key , required this.selectedIndex });
+  int selectedIndex = 0;
 
   @override
   State<UserPage> createState() => _UserPageState();
 }
 
 class _UserPageState extends State<UserPage> {
-  int _selectedIndex = 0;
+  //int _selectedIndex = 0;
 
   static final List<Widget> _widgetOptions = <Widget>[
-    // const UserProductsTab(),
-    // const UserCartTab(),
-    // const SizedBox(),
-    // ProfileTab(
-    //   userModel: user,
-    // ),
+    const UserProductTab(),
+     const UserCartTab(),
     const SizedBox(),
-    const SizedBox(),
-    const SizedBox(),
-    const SizedBox(),
+    ProfileTab(),
   ];
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+     widget.selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _widgetOptions[_selectedIndex],
+      body: _widgetOptions[widget.selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         iconSize: 30,
         selectedItemColor: AppPalette.green3Color,
         unselectedItemColor: AppPalette.thinTextColor,
-        currentIndex: _selectedIndex,
+        currentIndex: widget.selectedIndex,
         onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),

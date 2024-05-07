@@ -1,10 +1,11 @@
 
 import 'package:doan_tn/home/home_admin/view/admin_page.dart';
-import 'package:doan_tn/home/home_user/view/home_user_view.dart';
+import 'package:doan_tn/home/home_user/view/user_product_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../base/controler/base_provider.dart';
 import '../../../../home/home_admin/view/admin_product_tab.dart';
+import '../../../../home/home_user/view/user_page.dart';
 import '../../../../values/assets.dart';
 import '../../../../values/colors.dart';
 import '../../../register/view/register_view.dart';
@@ -25,21 +26,8 @@ class LoginBodyWidget extends StatefulWidget {
 
 class _LoginBodyWidgetState extends State<LoginBodyWidget> {
 
-  void _navigatorToRegisterPage(BuildContext context) {
-    Navigator.pushNamed(context, '/Register');
-  }
-
-  void _navigatorToAdminPage(BuildContext context) {
-    Navigator.pushNamed(context, '/Admin');
-  }
-
-  void _navigatorToUserPage(BuildContext context) {
-    Navigator.pushNamed(context, '/User');
-  }
-
   bool _showPass = false;
   bool? _isChecked = false;
-  bool _checkAdmin = false;
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -101,9 +89,10 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                         SecureStorage().delete('name');
                         SecureStorage().delete('password');
                       }
-                      if(_checkAdmin){
+                      if(loginProvider.checkAdmin!){
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (_) => AdminPage(
+                              selectedIndex: 0,
                               // data: loginProvider.user!,
                             )));
                        // _navigatorToAdminPage(context);
@@ -111,7 +100,8 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                       }
                       else{
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (_) => HomeUserView(
+                            builder: (_) => UserPage(
+                              selectedIndex: 0,
                               // data: loginProvider.user!,
                             )));
                        // _navigatorToUserPage(context);
@@ -308,12 +298,12 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        if(_usernameController.text == "vanchuadau56@gmail.com"){
-                          _checkAdmin = true;
-                        }
-                        else{
-                          _checkAdmin = false;
-                        }
+                        // if(_usernameController.text == "vanchuadau56@gmail.com"){
+                        //   _checkAdmin = true;
+                        // }
+                        // else{
+                        //   _checkAdmin = false;
+                        // }
                         provider.login(context, _usernameController.text,
                             _passwordController.text);
                       },
@@ -337,11 +327,9 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                     ),
                     InkWell(
                       onTap: (){
-                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        //     builder: (_) => RegisterView(
-                        //       // data: loginProvider.user!,
-                        //     )));
-                        _navigatorToRegisterPage(context);
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (_) => const RegisterView(
+                            )));
                       },
                       child: const Text("Bạn chưa có tài khoản , bấm vào đây", style: TextStyle(color: Colors.white , decoration: TextDecoration.underline),)
                     ),

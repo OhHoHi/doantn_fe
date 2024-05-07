@@ -4,40 +4,39 @@ import '../../../values/apppalette.dart';
 import 'admin_product_tab.dart';
 
 class AdminPage extends StatefulWidget {
-  const AdminPage({super.key});
+  AdminPage({super.key , required this.selectedIndex});
+  int selectedIndex = 0;
 
   @override
   State<AdminPage> createState() => _AdminPageState();
 }
 
 class _AdminPageState extends State<AdminPage> {
-  int _selectedIndex = 0;
+
 
   static final List<Widget> _widgetOptions = <Widget>[
     const AdminProductTab(),
     const SizedBox(),
     const SizedBox(),
-    ProfileTab(
-      userModel: admin,
-    ),
+    ProfileTab(),
   ];
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      widget.selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _widgetOptions[_selectedIndex],
+      body: _widgetOptions[ widget.selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         iconSize: 30,
         selectedItemColor: AppPalette.green3Color,
         unselectedItemColor: AppPalette.thinTextColor,
-        currentIndex: _selectedIndex,
+        currentIndex:  widget.selectedIndex,
         onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),

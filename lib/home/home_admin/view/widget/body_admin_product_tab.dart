@@ -1,17 +1,13 @@
 import 'dart:typed_data';
-
-import 'package:doan_tn/auth/login/view/login_screen.dart';
 import 'package:doan_tn/home/controller/product_provider.dart';
-import 'package:doan_tn/home/home_admin/view/widget/product_detail.dart';
 import 'package:doan_tn/home/home_admin/view/widget/product_item.dart';
 import 'package:doan_tn/home/model/product_reponse.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../../base/controler/base_provider.dart';
 import '../../../../base/controler/consumer_base.dart';
 import '../../../../values/colors.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
-
-import '../add_product_screen.dart';
 
 
 class BodyAdminProductTab extends StatefulWidget {
@@ -36,59 +32,95 @@ class _BodyHomeViewState extends State<BodyAdminProductTab> {
   Widget build(BuildContext context) {
     return Container(
       color: ColorApp.backgroundColor,
-      child: ConsumerBase<ProductProvider>(
-          contextData: context,
-          onRepository: (rep) {
-            print('================-----');
-            ProductProvider pro = rep;
-            if (pro.isLoading) {
-              print('bat dau load');
-              pro.messagesLoading = 'Đang lấy dữ liệu .....';
-            }
-            return const SizedBox();
-          },
-          onRepositoryError: (rep) {
-            print('load loi');
-            return Center(
-                child: Text(
-                  rep.messagesError ?? '',
-                  style:
-                  const TextStyle(fontSize: 14, color: Colors.black),
-                ));
-          },
-          onRepositoryNoData: (rep) {
-            return const Center(
-              child: Text(
-                'Khong co du lieu',
-                style: TextStyle(fontSize: 14, color: Colors.black),
-              ),
-            );
-          },
-          onRepositorySuccess: (rep) {
-            print('load thanh cong');
-            ProductProvider pro = rep;
-            if (pro.isLoaded) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ProgressHUD.of(context)?.dismiss();
-              });
-            }
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(5),
-              child: GridView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 5,
-                    crossAxisSpacing: 5,
-                    mainAxisExtent: 260),
-                itemCount: pro.listProduct.length,
-                itemBuilder: (context, index) {
-                  return ProductCard(product: pro.listProduct[index], isAdmin: true, productProvider: productProvider,);
-                },
-              ),
-            );
-          })
+      // child: ConsumerBase<ProductProvider>(
+      //     contextData: context,
+      //     onRepository: (rep) {
+      //       print('================-----');
+      //       ProductProvider pro = rep;
+      //       if (pro.isLoading) {
+      //         print('bat dau load');
+      //         pro.messagesLoading = 'Đang lấy dữ liệu .....';
+      //       }
+      //       return const SizedBox();
+      //     },
+      //     onRepositoryError: (rep) {
+      //       print('load loi');
+      //       return Center(
+      //           child: Text(
+      //             rep.messagesError ?? '',
+      //             style:
+      //             const TextStyle(fontSize: 14, color: Colors.black),
+      //           ));
+      //     },
+      //     onRepositoryNoData: (rep) {
+      //       return const Center(
+      //         child: Text(
+      //           'Khong co du lieu',
+      //           style: TextStyle(fontSize: 14, color: Colors.black),
+      //         ),
+      //       );
+      //     },
+      //     onRepositorySuccess: (rep) {
+      //       print('load thanh cong');
+      //       ProductProvider pro = rep;
+      //       if (pro.isLoaded) {
+      //         WidgetsBinding.instance.addPostFrameCallback((_) {
+      //           ProgressHUD.of(context)?.dismiss();
+      //         });
+      //       }
+      //       return SingleChildScrollView(
+      //         padding: const EdgeInsets.all(5),
+      //         child: GridView.builder(
+      //           physics: const NeverScrollableScrollPhysics(),
+      //           shrinkWrap: true,
+      //           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      //               crossAxisCount: 2,
+      //               mainAxisSpacing: 5,
+      //               crossAxisSpacing: 5,
+      //               mainAxisExtent: 260),
+      //           itemCount: pro.listProduct.length,
+      //           itemBuilder: (context, index) {
+      //             return ProductCard(product: pro.listProduct[index], isAdmin: true, productProvider: productProvider,);
+      //           },
+      //         ),
+      //       );
+      //     })
+      child: Selector<ProductProvider, Status>(builder: (context, value, child) {
+        if (value == Status.loading) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ProgressHUD.of(context)?.show();
+          });
+          print('Bat dau load');
+        } else if (value == Status.loaded) {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            ProgressHUD.of(context)?.dismiss();
+          });
+          print("load thanh cong");
+        } else if (value == Status.error) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ProgressHUD.of(context)?.dismiss();
+            print('Load error r');
+          });
+        }
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(5),
+          child: GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
+                mainAxisExtent: 260),
+            itemCount: productProvider.listProduct.length,
+            itemBuilder: (context, index) {
+              return ProductCard(product: productProvider.listProduct[index], isAdmin: true, productProvider: productProvider,);
+            },
+          ),
+        );
+      }, selector: (context, pro) {
+        return pro.statusListProduct;
+      }),
     );
   }
   Widget productGridItem(ProductResponse product) {
@@ -136,10 +168,10 @@ class _BodyHomeViewState extends State<BodyAdminProductTab> {
                       );
                     },
                     onRepositoryNoData: (rep) {
-                      return Center(
+                      return const Center(
                         child: Text(
                           'Khong co du lieu',
-                          style: const TextStyle(fontSize: 14, color: Colors.black),
+                          style: TextStyle(fontSize: 14, color: Colors.black),
                         ),
                       );
                     },
@@ -162,15 +194,15 @@ class _BodyHomeViewState extends State<BodyAdminProductTab> {
                         );
                       } else {
                         // Hiển thị một widget placeholder hoặc loading
-                        return SizedBox(
+                        return const SizedBox(
                           width: 100,
                           height: 100,
-                          child: Text('loi anh' , style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                          child: Text('loi anh' , style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                         );
                       }
                     },
                   ),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   Text('Vợt cầu lông ${product.name}', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),),
                   //Text('Giá: ${product.price}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold , color: Colors.red),), // Ví dụ: Hiển thị giá sản phẩm
                   Row(

@@ -1,3 +1,4 @@
+import 'package:doan_tn/home/home_admin/view/admin_page.dart';
 import 'package:doan_tn/home/model/product_reponse.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:doan_tn/home/controller/product_provider.dart';
@@ -164,6 +165,14 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
                 content: 'Đã thêm sản phẩm thành công',
                 icon: AppAssets.icoDefault,
                 button: true,
+                function:(){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AdminPage(selectedIndex: 0),
+                    ),
+                  );
+                } ,
               );
             });
       } else {
@@ -178,6 +187,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
                 content: 'Thêm sản phẩm thất bại',
                 icon: AppAssets.icoDefault,
                 button: true,
+
               );
             });
       }
@@ -227,14 +237,23 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
         // ScaffoldMessenger.of(context).showSnackBar(
         //   SnackBar(content: Text('Product added successfully')),
         // );
+
         showDialog(
             context: context,
             builder: (context) {
               return DialogBase(
                 title: 'Thông báo',
-                content: 'Đã thêm sản phẩm thành công',
+                content: 'Đã SỬA sản phẩm thành công',
                 icon: AppAssets.icoDefault,
                 button: true,
+                function:(){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AdminPage(selectedIndex: 0),
+                    ),
+                  );
+                } ,
               );
             });
       } else {
@@ -246,7 +265,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
             builder: (context) {
               return DialogBase(
                 title: 'Thông báo',
-                content: 'Thêm sản phẩm thất bại',
+                content: 'SỬA sản phẩm thất bại',
                 icon: AppAssets.icoDefault,
                 button: true,
               );
@@ -660,10 +679,12 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
             const SizedBox(height: 50),
             ElevatedButton(
               onPressed: () {
-                widget.productResponse != null
-                    ? _editProduct(
-                        widget.productResponse!.id)
-                    : _addProduct();
+                if(widget.productResponse != null){
+                  _editProduct(
+                      widget.productResponse!.id);
+                } else {
+                  _addProduct();
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppPalette.green3Color,

@@ -10,7 +10,7 @@ class SkeletonTab extends StatelessWidget {
     required this.bodyWidgets,
     required this.isBack,
     this.floatingButton,
-    this.bottomSheetWidgets,
+    this.bottomSheetWidgets, this.isbg,
   });
 
   final String title;
@@ -19,12 +19,13 @@ class SkeletonTab extends StatelessWidget {
   final Widget? floatingButton;
   final Widget? bottomSheetWidgets;
   final bool isBack;
+  final bool? isbg;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       //backgroundColor: AppPalette.backgroundColor,
-      backgroundColor: Color(0xffCDF8C5),
+      backgroundColor: isbg == null ? const Color(0xffCDF8C5) : Colors.white,
       appBar: AppBar(
         backgroundColor: AppPalette.backgroundAppbarColor,
         surfaceTintColor: AppPalette.backgroundAppbarColor,
