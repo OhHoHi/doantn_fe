@@ -15,13 +15,15 @@ class _AppBarLoginWidgetState extends State<AppBarLoginWidget> {
     return Column(
       children: [
         Image.asset(
-          'assets/images/logocaulong.png',
+          'assets/images/bglog.png',
           fit: BoxFit.cover,
           width: MediaQuery.of(context).size.width,
+          height:MediaQuery.of(context).size.height ,
         ),
         Container(
-          padding: const EdgeInsets.only(top: 60,right: 16),
-          color: Color(0xff10B77B),
+         // padding: const EdgeInsets.only(top: 60,right: 16),
+          color: Colors.white
+         // Color(0xff10B77B),
         ),
 
 

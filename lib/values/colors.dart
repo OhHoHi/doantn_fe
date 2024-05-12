@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ColorApp {
-  static const Color textColor = Color(0xff102459);
+  static const Color textColor = Color(0xff000000);
+  static const Color trang = Color(0xffffffff);
+
   static const Color subTextColor = Color(0xff928E85);
   static const Color textColorPrimary = Color(0xff00313E);
   static const Color startColor = Color(0xffE52A2A);

@@ -9,7 +9,7 @@ import '../../../../auth/login/model/test_luu_user.dart';
 import '../../../../base/controler/base_provider.dart';
 import '../../../../values/apppalette.dart';
 import '../../../controller/product_provider.dart';
-import '../crud_product_screen.dart';
+import '../crud_product_tab.dart';
 
 
 class ProductCard extends StatefulWidget {

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../base/services/dio_option.dart';
-import 'crud_product_screen.dart';
+import 'crud_product_tab.dart';
 
 class AdminProductTab extends StatelessWidget {
   const AdminProductTab({Key? key}) : super(key: key);

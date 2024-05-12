@@ -4,7 +4,7 @@ import 'package:doan_tn/home/home_admin/view/widget/product_detail.dart';
 import 'package:doan_tn/home/model/product_reponse.dart';
 import 'package:flutter/material.dart';
 
-import '../home/home_admin/view/crud_product_screen.dart';
+import '../home/home_admin/view/crud_product_tab.dart';
 import '../home/home_admin/view/admin_page.dart';
 import '../home/home_user/view/user_page.dart';
 

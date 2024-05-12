@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 class FontFamily {
   static final san = 'Open Sans';
   static final inter = 'Inter';
+  static final nutino = 'Nuntio';
+  static final nutino1 = 'Nuntio1';
+
+
 
 }
 
@@ -13,8 +17,20 @@ class AppStyles {
   static TextStyle h2 = TextStyle(
       fontFamily: FontFamily.san, fontSize: 22, color: Colors.white);
 
-  static TextStyle h3 = TextStyle(
-      fontFamily: FontFamily.san, fontSize: 14, color: Colors.white);
+  static TextStyle nuntio_14 = TextStyle(
+      fontFamily: FontFamily.nutino, fontSize: 14, color: Colors.white);
+  static TextStyle nuntio_14_black = TextStyle(
+      fontFamily: FontFamily.nutino, fontSize: 14, color: Colors.black);
+  static TextStyle nuntio1_14 = TextStyle(
+      fontFamily: FontFamily.nutino1, fontSize: 14, color: Colors.white);
+  static TextStyle nuntio_18 = TextStyle(
+      fontFamily: FontFamily.nutino, fontSize: 18, color: Colors.black);
+  static TextStyle nuntio_30 = TextStyle(
+      fontFamily: FontFamily.nutino, fontSize: 30, color: Colors.black);
+  static TextStyle nuntio_20 = TextStyle(
+      fontFamily: FontFamily.nutino, fontSize: 20, color: Colors.black);
+  static TextStyle nuntio_25 = TextStyle(
+      fontFamily: FontFamily.nutino, fontSize: 25, color: Colors.black);
 
   static TextStyle h4 = TextStyle(
       fontFamily: FontFamily.san, fontSize: 12, color: Colors.white);

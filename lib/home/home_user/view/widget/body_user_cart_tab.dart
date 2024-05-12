@@ -45,7 +45,7 @@ class _UserCartTabState extends State<BodyUserCartTab> {
   @override
   Widget build(BuildContext context) {
     return SkeletonTab(
-      title: 'Trang chủ user',
+      title: 'Giỏ hàng',
       // title: loginProvider.user!.token ?? '',
       bodyWidgets:    Selector<ProductProvider, Status>(builder: (context, value, child) {
         if (value == Status.loading) {

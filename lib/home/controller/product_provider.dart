@@ -9,8 +9,11 @@ import 'package:doan_tn/home/model/product_add_request.dart';
 import 'package:doan_tn/home/service/product_services.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import '../../base/controler/base_provider.dart';
 import '../../base/services/dio_option.dart';
+import '../home_user/search_tab/model/serch_request.dart';
+import '../model/brand_response.dart';
 import '../model/product_edit_request.dart';
 
 class ProductProvider extends BaseProvider<ProductService> {
@@ -86,7 +89,7 @@ class ProductProvider extends BaseProvider<ProductService> {
       } else {
         listProductDisplay += listProduct;
       }
-      if (listProduct.length < 10) {
+      if (listProduct.length <10) {
         canLoadMore = false;
       }
       finishLoading((){
@@ -532,6 +535,110 @@ class ProductProvider extends BaseProvider<ProductService> {
       //     return DialogBase(title:"Thất bại", icon: AppAssets.iconFail,content: "Có lỗi hệ thống",);
       //   },
       // );
+    }
+  }
+
+
+  //tìm kiếm
+  Status statusListSearch = Status.none;
+  late List<ProductResponse> listSearch = [] ;
+  late List<ProductResponse> listSearchDisplay = [] ;
+
+
+  int? brandId ;
+  String? sortSearch;
+  String? productName;
+  double? minPrice ;
+  double? maxPrice ;
+  int? diemCanBang;
+  int pageSearch = 0;
+
+  BrandResponse? selectedBrand;
+  String? selectedLoaivot = "Tất cả";
+
+  late bool canLoadMoreSearch;
+  bool refreshSearch = false;
+
+  void resetPageSearch() {
+    pageSearch = 0;
+    canLoadMoreSearch = true;
+    listSearchDisplay = [];
+  }
+
+  void loadMoreSearch() {
+    if (canLoadMoreSearch) {
+      pageSearch += 1;
+      getListSearch();
+    }
+  }
+
+  void search(String nameSearch) {
+    productName = nameSearch;
+    getListSearch();
+  }
+
+  void refreshAllSearch() {
+    selectedBrand = null;
+    selectedLoaivot = "Tất cả";
+    minPrice =  null;
+    maxPrice = null;
+  }
+  Future<void> getListSearch() async {
+    resetStatus();
+    try {
+      startLoading(() {
+        statusListSearch = Status.loading;
+      });
+      listSearch = await service.getListSearch(
+          SearchRequest(
+              brandId: selectedBrand?.id,
+              page: pageSearch,
+              size: 10,
+              sort: sortSearch,
+              productName: productName,
+              minPrice: minPrice,
+              maxPrice: maxPrice,
+              diemCanBang:
+              selectedLoaivot == 'Nhẹ đầu'
+                  ? 285
+                  : selectedLoaivot == 'Cân bằng'
+                  ? 294
+                  : selectedLoaivot == 'Nặng đầu'
+                  ? 296
+                  : null
+          )
+      );
+      for (var product in listSearch) {
+        await getFirstImageForProduct(product);
+      }
+      if (refreshSearch == true) {
+        listSearchDisplay = listSearch;
+        refreshSearch = false;
+      } else {
+        listSearchDisplay += listSearch;
+      }
+      if (listSearch.length < 10) {
+        canLoadMoreSearch = false;
+      }
+      finishLoading(() {
+        statusListSearch = Status.loaded;
+      });
+      if(listSearch.isEmpty){
+        receivedNoData(() {
+          statusListSearch = Status.noData;
+        });
+      }
+      else{
+        finishLoading(() {
+          statusListSearch = Status.loaded;
+        });
+      }
+
+    } on DioException catch (e) {
+      messagesError = e.message ?? 'Co loi he thong';
+      receivedError(() {
+        statusListSearch = Status.error;
+      });
     }
   }
 

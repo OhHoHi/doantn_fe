@@ -4,8 +4,8 @@ class ServicesUrl {
   static const String postLogin = "$baseUrl/api/v1/auth/login";
   static const String postRegister = "$baseUrl/api/v1/auth/register";
   static const String listProduct = "$baseUrl/products/listProducts";
+  static const String listProductSearch = "$baseUrl/products/listProductSearch";
   static const String addProduct = "$baseUrl/products/addProduct";
   static const String addCart = "$baseUrl/api/cart/add";
-
 
 }

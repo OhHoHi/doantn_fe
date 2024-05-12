@@ -24,6 +24,7 @@ class SkeletonTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        //const Color(0xffCDF8C5)
       //backgroundColor: AppPalette.backgroundColor,
       backgroundColor: isbg == null ? const Color(0xffCDF8C5) : Colors.white,
       appBar: AppBar(
@@ -32,7 +33,8 @@ class SkeletonTab extends StatelessWidget {
         title: Text(title,
             style: const TextStyle(
               color: AppPalette.textColor,
-              fontSize: 22,
+              fontSize: 25,
+                fontFamily: "Nuntio"
             )
         ),
         centerTitle: true,
@@ -53,15 +55,15 @@ class SkeletonTab extends StatelessWidget {
             Container(
                 decoration: const BoxDecoration(
                     gradient: LinearGradient(
-                      begin: Alignment.topCenter,
+                      begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
-                      colors: [Color(0xff10B77B), Color(0xff65C952), Color(0xff5EF940)],
+                      colors: [ Color(0xffEFCE55) ,Color(0xffEC8D21),],
                     ))),
             Container(
                 margin: const EdgeInsets.only(top: 15),
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 25.0),
-                  child: Image.asset('assets/images/logocaulong.png'),
+                  padding: const EdgeInsets.only(top: 55.0),
+                  child: Image.asset('assets/images/logo1.png'),
                 )),
           ],
         ),

@@ -64,7 +64,7 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Color(0xff10B77B),
+      backgroundColor: Colors.white,
       body: SizedBox(
         width: double.infinity,
         height: double.infinity,
@@ -136,8 +136,8 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                 right: size.width * 0.04,
               ),
               child: Container(
-                margin: EdgeInsets.only(top: size.height * 0.45),
-                height: 408,
+                margin: EdgeInsets.only(top: size.height * 0.35),
+                //height: 430,
                 child: Column(
                   children: [
                     Container(
@@ -146,22 +146,25 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                         'Đăng nhập',
                         style: TextStyle(
                           color: ColorApp.textColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 35,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: "Nuntio",
                         ),
                       ),
                     ),
+                    const SizedBox(height: 39,),
                     Container(
-                      padding: EdgeInsets.all(20.04),
+                      padding: EdgeInsets.symmetric(horizontal:28 ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Row(
                             children: [
+                              SizedBox(width: 20,),
                               Text(
                                 'Tên đăng nhập',
                                 style: TextStyle(
-                                    fontSize: 14, color: ColorApp.textColor),
+                                    fontSize: 14, color: ColorApp.textColor , fontFamily: "Nuntio1",),
                               ),
                               Text(
                                 '*',
@@ -173,14 +176,14 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                             ],
                           ),
                           const SizedBox(
-                            height: 8,
+                            height: 4,
                           ),
                           Container(
                             padding: EdgeInsets.only(left: 10),
-                            height: 40,
+                            height: 51,
                             decoration: BoxDecoration(
                               color: ColorApp.textFieltColor,
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(25.5),
                             ),
                             child: Row(
                               children: [
@@ -200,7 +203,9 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                                         fontWeight: FontWeight.w400),
                                     decoration: const InputDecoration(
                                         hintText: 'Nhập tên đăng nhập',
-                                        border: InputBorder.none),
+                                        hintStyle: TextStyle( fontFamily: "Nuntio1"),
+                                        border: InputBorder.none
+                                    ),
                                   ),
                                 ),
                               ],
@@ -211,11 +216,13 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                           ),
                           const Row(
                             children: [
+                              SizedBox(width: 20,),
                               Text(
                                 'Mật khẩu',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: ColorApp.textColor,
+                                    fontFamily: "Nuntio1"
                                 ),
                               ),
                               Text(
@@ -228,14 +235,14 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                             ],
                           ),
                           const SizedBox(
-                            height: 8,
+                            height: 4,
                           ),
                           Container(
                             padding: EdgeInsets.only(left: 10),
-                            height: 40,
+                            height: 51,
                             decoration: BoxDecoration(
                               color: ColorApp.textFieltColor,
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(25.5),
                             ),
                             child: Row(
                               children: [
@@ -253,6 +260,7 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                                     obscureText: !_showPass,
                                     decoration: const InputDecoration(
                                         hintText: 'Nhập mật khẩu',
+                                        hintStyle: TextStyle( fontFamily: "Nuntio1"),
                                         border: InputBorder.none),
                                     style: const TextStyle(
                                         fontSize: 14,
@@ -279,6 +287,9 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                               children: [
                                 // SvgPicture.asset(AppAssets.icoDefault),
                                 Checkbox(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5.0), // Điều chỉnh bán kính để bo tròn góc
+                                    ),
                                     value: false,
                                     activeColor: ColorApp.backgroundColor,
                                     onChanged: (bool? value) {
@@ -296,6 +307,7 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 30,),
                     GestureDetector(
                       onTap: () {
                         // if(_usernameController.text == "vanchuadau56@gmail.com"){
@@ -308,22 +320,28 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                             _passwordController.text);
                       },
                       child: Container(
-                        height: 40,
-                        margin: EdgeInsets.only(left: 19, right: 19),
+                        height: 53,
+                        margin: const EdgeInsets.only(left: 100, right: 100),
                         decoration: BoxDecoration(
-                          color: ColorApp.buttonColor,
-                          borderRadius: BorderRadius.circular(10),
+                            gradient: const LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [Color(0xff2F4674), Color(0xff0F1D31)],
+                            ),
+                          borderRadius: BorderRadius.circular(26.5),
                         ),
                         child: const Center(
                           child: Text(
                             'Đăng nhập',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                            style: TextStyle(color: Colors.white, fontSize: 24,
+                              fontFamily: "Nuntio"
+                            ),
                           ),
                         ),
                       ),
                     ),
                     const SizedBox(
-                      height: 26,
+                      height: 6,
                     ),
                     InkWell(
                       onTap: (){
@@ -331,7 +349,7 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                             builder: (_) => const RegisterView(
                             )));
                       },
-                      child: const Text("Bạn chưa có tài khoản , bấm vào đây", style: TextStyle(color: Colors.white , decoration: TextDecoration.underline),)
+                      child: const Text("Bạn chưa có tài khoản . Bấm vào đây", style: TextStyle(color: Colors.black , decoration: TextDecoration.underline , fontFamily: "Nuntio1"),)
                     ),
                   ],
                 ),

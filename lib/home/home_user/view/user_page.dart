@@ -1,3 +1,5 @@
+import 'package:doan_tn/home/home_user/notify_tab/view/user_notify_tab.dart';
+import 'package:doan_tn/home/home_user/search_tab/view/user_search_tab.dart';
 import 'package:doan_tn/home/home_user/view/user_cart_tab.dart';
 import 'package:doan_tn/home/home_user/view/user_product_tab.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +22,10 @@ class _UserPageState extends State<UserPage> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     const UserProductTab(),
-     const UserCartTab(),
-    const SizedBox(),
-    ProfileTab(),
+    const UserSearchTab(),
+    const UserCartTab(),
+    const UserNotifyTab(),
+    const ProfileTab(),
   ];
 
   void _onItemTapped(int index) {
@@ -44,6 +47,8 @@ class _UserPageState extends State<UserPage> {
         onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.search), label: 'Tìm kiếm'),
           BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart_outlined), label: 'Giỏ hàng'),
           BottomNavigationBarItem(

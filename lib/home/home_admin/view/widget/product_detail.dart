@@ -10,7 +10,7 @@ import '../../../../base/widget/dialog_base.dart';
 import '../../../../values/apppalette.dart';
 import '../../../../values/assets.dart';
 import '../../../controller/product_provider.dart';
-import '../crud_product_screen.dart';
+import '../crud_product_tab.dart';
 import 'package:intl/intl.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -297,7 +297,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>with TickerPro
                       ]),
                       DataRow(cells: [
                         const DataCell(Text('Điểm cân bằng')),
-                        DataCell(Text(widget.product.diemCanBang)),
+                        DataCell(Text("${widget.product.diemCanBang} mm")),
                       ]),
                       DataRow(cells: [
                         const DataCell(Text('Chiều dài vợt')),

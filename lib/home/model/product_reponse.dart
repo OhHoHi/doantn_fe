@@ -15,7 +15,7 @@ class ProductResponse {
   String chatLieuThanVot;
   String trongLuong;
   String doCung;
-  String diemCanBang;
+  int diemCanBang;
   String chieuDaiVot;
   String mucCangToiDa;
   String chuViCanCam;

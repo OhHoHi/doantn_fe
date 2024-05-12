@@ -60,7 +60,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
 
       _doCungController.text = widget.productResponse!.doCung;
 
-      _diemCanBangController.text = widget.productResponse!.diemCanBang;
+      _diemCanBangController.text = widget.productResponse!.diemCanBang.toString();
 
       _chieuDaiVotController.text = widget.productResponse!.chieuDaiVot;
 
