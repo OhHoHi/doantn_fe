@@ -10,7 +10,7 @@ class SkeletonTab extends StatelessWidget {
     required this.bodyWidgets,
     required this.isBack,
     this.floatingButton,
-    this.bottomSheetWidgets, this.isbg,
+    this.bottomSheetWidgets, this.isbg, this.isAddress,
   });
 
   final String title;
@@ -20,6 +20,7 @@ class SkeletonTab extends StatelessWidget {
   final Widget? bottomSheetWidgets;
   final bool isBack;
   final bool? isbg;
+  final bool? isAddress;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,8 @@ class SkeletonTab extends StatelessWidget {
         leading: isBack == true
             ? BackButton(
           onPressed: () {
-            Navigator.pop(context);
+            isAddress == false ?
+            Navigator.pop(context) : Navigator.pop(context , true) ;
           },
           color: Colors.white,
         ) : const SizedBox(),

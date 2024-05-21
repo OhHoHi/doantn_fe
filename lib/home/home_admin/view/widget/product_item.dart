@@ -10,7 +10,7 @@ import '../../../../base/controler/base_provider.dart';
 import '../../../../values/apppalette.dart';
 import '../../../controller/product_provider.dart';
 import '../crud_product_tab.dart';
-
+import 'package:intl/intl.dart';
 
 class ProductCard extends StatefulWidget {
   const ProductCard({super.key, required this.product, required this.isAdmin, required this.productProvider});
@@ -25,6 +25,11 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   late LoginResponse user;
   late bool isInCart = false;
+
+  String formatPrice(int price) {
+    final formatter = NumberFormat('#,###');
+    return formatter.format(price);
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -145,10 +150,10 @@ class _ProductCardState extends State<ProductCard> {
                   ? Row(
                 children: [
                   const SizedBox(
-                    width: 30,
+                    width: 26,
                   ),
                   Text(
-                    '${widget.product.price} vnd',
+                    '${formatPrice(widget.product.price)} vnd',
                     style: const TextStyle(
                       color: AppPalette.textColorRed, fontSize: 14 ,fontWeight: FontWeight.bold ,),
                   ),
@@ -168,10 +173,10 @@ class _ProductCardState extends State<ProductCard> {
                   : Row(
                 children: [
                   const SizedBox(
-                    width: 30,
+                    width: 26,
                   ),
                   Text(
-                    '${widget.product.price} vnd',
+                    '${formatPrice(widget.product.price)} vnd',
                     style: const TextStyle(
                         color: AppPalette.textColorRed, fontSize: 14 ,fontWeight: FontWeight.bold ,),
                   ),

@@ -7,5 +7,11 @@ class ServicesUrl {
   static const String listProductSearch = "$baseUrl/products/listProductSearch";
   static const String addProduct = "$baseUrl/products/addProduct";
   static const String addCart = "$baseUrl/api/cart/add";
+  static const String addAddress = "$baseUrl/api/addresses/add";
+  static const String addOrder = "$baseUrl/api/orders/create";
+  static const String getListOrder = "$baseUrl/api/orders/all";
+
+
+
 
 }

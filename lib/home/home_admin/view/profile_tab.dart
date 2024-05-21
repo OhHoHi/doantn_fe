@@ -1,6 +1,8 @@
 import 'package:doan_tn/auth/login/controller/user_provider.dart';
 import 'package:doan_tn/auth/login/model/user_response.dart';
 import 'package:doan_tn/auth/login/services/user_srvices.dart';
+import 'package:doan_tn/home/home_user/address/service/address_service.dart';
+import 'package:doan_tn/home/home_user/pay/view/order_pay_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../auth/login/model/login_response.dart';
@@ -13,6 +15,10 @@ import '../../../values/apppalette.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 
 import '../../../values/assets.dart';
+import '../../../values/styles.dart';
+import '../../home_user/address/controller/address_provider.dart';
+import '../../home_user/address/model/address_response.dart';
+import '../../home_user/address/view/address_screen.dart';
 import '../../home_user/view/user_page.dart';
 
 class ProfileTab extends StatelessWidget {
@@ -27,6 +33,10 @@ class ProfileTab extends StatelessWidget {
           ChangeNotifierProvider(
             create: (context) =>
                 UserProvider(UserServices(DioOption().createDio())),
+          ),
+          ChangeNotifierProvider(
+            create: (context) =>
+                AddressProvider(AddressService(DioOption().createDio())),
           ),
         ],
         child: const SkeletonTab(
@@ -45,16 +55,20 @@ class BodyProfileTab extends StatefulWidget {
 
 class _BodyProfileTabState extends State<BodyProfileTab> {
   late UserProvider userProvider;
+  late AddressProvider addressProvider ;
   late LoginResponse user;
+  AddressResponse? selectedAddress;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    addressProvider= Provider.of<AddressProvider>(context, listen: false);
     userProvider = Provider.of<UserProvider>(context, listen: false);
     user = TempUserStorage.currentUser!;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       userProvider.getUser(user.user.id);
+      addressProvider.getListAddress(user.user.id);
     });
   }
 
@@ -86,28 +100,134 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
   Widget buildData(UserProvider userProvider) {
     return SizedBox(
       width: double.infinity,
+      height: 700,
       child: Column(
         children: [
           const SizedBox(
             height: 10,
           ),
-          const SizedBox(
-            height: 150,
-            width: 150,
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                  "https://cdn-icons-png.flaticon.com/512/3607/3607444.png"),
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+              PopupMenuItem(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditUser(userResponse: userProvider.userResponse , userProvider: userProvider,),
+                    ),
+                  );
+                },
+                child: const Text('Chỉnh sửa thông tin'),
+              ),
+              PopupMenuItem(
+                  onTap: () async {
+                    final address = await Navigator.push<AddressResponse?>(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddressScreen(),
+                      ),
+                    );
+                    if (address != null) {
+                      setState(() {
+                        selectedAddress = address;
+                      });
+                    }
+                  },
+
+                child: const Text('Địa chỉ của tôi'),
+              ),
+              PopupMenuItem(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChangePassword(userResponse: userProvider.userResponse , userProvider: userProvider,),
+                    ),
+                  );
+                },
+                child: const Text('Đổi mật khẩu'),
+              ),
+
+              PopupMenuItem(
+                onTap: () {
+
+                },
+                child: const Text('Đăng xuất'),
+              ),
+            ],
+            child:const SizedBox(
+              height: 150,
+              width: 150,
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(
+                    "https://cdn-icons-png.flaticon.com/512/3607/3607444.png"),
+              ),
             ),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 10),
+           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              user.user.roles.first.name == "ROLE_ADMIN" ?
+              InkWell(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OrderPayScreen(isAdmin: true, initialTabIndex: 0),
+                    ),
+                  );
+                },
+                child: const Column(
+                  children: [
+                    Icon(Icons.payment),
+                    Text('Các đơn cần xác nhận'),
+                  ],
+                ),
+              ) :InkWell(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OrderPayScreen(isAdmin: false,initialTabIndex:  0),
+                    ),
+                  );
+                },
+                child: const Column(
+                  children: [
+                    Icon(Icons.payment),
+                    Text('Chờ xác nhận'),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 20,),
+              InkWell(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OrderPayScreen(isAdmin: false,initialTabIndex:  1),
+                    ),
+                  );
+                },
+                child: const Column(
+                  children: [
+                    Icon(Icons.drive_eta_rounded),
+                    Text('Đơn hàng của bạn'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const Divider(
+            thickness: 3,
+
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(width: 70,),
-              Text(
-                userProvider.userResponse.userName,
-                style: const TextStyle(color: AppPalette.textColor, fontSize: 20),
-              ),
+              Text('Thông tin cá nhân' , style: AppStyles.nuntio_14_blue,),
               const SizedBox(width: 20,),
               IconButton(
                 onPressed: () {
@@ -133,38 +253,106 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
               ),
             ],
           ),
+          Text(
+            userProvider.userResponse.userName,
+            style: AppStyles.nuntio1_20_black,
+          ),
           const SizedBox(height: 10),
           Text(
             userProvider.userResponse.fullName,
-            style: const TextStyle(color: AppPalette.textColor, fontSize: 20),
+            style: AppStyles.nuntio1_20_black,
           ),
           const SizedBox(height: 10),
           Text(
             userProvider.userResponse.email,
-            style: const TextStyle(color: AppPalette.textColor, fontSize: 18),
+            style: AppStyles.nuntio1_20_black,
           ),
-          const SizedBox(height: 50),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.push(
+          const Divider(
+            thickness: 3,
+          ),
+        Text('Địa chỉ' , style: AppStyles.nuntio_14_blue,),
+        Selector<AddressProvider, Status>(builder: (context, value, child) {
+          if (value == Status.loading) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ProgressHUD.of(context)?.show();
+            });
+            print('Bat dau load');
+          } else if (value == Status.loaded) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              ProgressHUD.of(context)?.dismiss();
+            });
+            print("load thanh cong");
+          } else if (value == Status.error) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ProgressHUD.of(context)?.dismiss();
+              print('Load error r');
+            });
+          }
+          if (addressProvider.listAddress.isNotEmpty &&
+              addressProvider.addressSelect != null) {
+            return GestureDetector(
+              onTap: () async {
+                final address = await Navigator.push<AddressResponse?>(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ChangePassword(userResponse: userProvider.userResponse , userProvider: userProvider,),
+                    builder: (context) => AddressScreen(),
                   ),
                 );
+
+                if (address != null) {
+                  setState(() {
+                    selectedAddress = address;
+                  });
+                }
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppPalette.green3Color,
-                foregroundColor: Colors.white,
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                minimumSize: const Size(250, 40),
+              child: Text(
+                    '${selectedAddress?.street ?? addressProvider.listAddress.first.street} \n'
+                    '${selectedAddress?.ward ?? addressProvider.listAddress.first.ward} , ${selectedAddress?.district ?? addressProvider.listAddress.first.district} ,  ${selectedAddress?.city ?? addressProvider.listAddress.first.city}',
+                style: AppStyles.nuntio1_20_black,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.start,
               ),
-              child: const Text(
-                'Đổi mật khẩu',
-                style: TextStyle(fontSize: 16),
-              )),
-          const Spacer(),
+            );
+          } else {
+            return ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: AppPalette.green3Color,
+                  foregroundColor: Colors.white,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25))),
+                  minimumSize: const Size(double.infinity, 40)),
+              child: const Text('Tạo mới địa chỉ'),
+            );
+          }
+        }, selector: (context, pro) {
+          return pro.statusListAddress;
+        }),
+          const Divider(
+            thickness: 3,
+          ),
+          const SizedBox(height: 30,),
+          // ElevatedButton(
+          //     onPressed: () {
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //           builder: (context) => ChangePassword(userResponse: userProvider.userResponse , userProvider: userProvider,),
+          //         ),
+          //       );
+          //     },
+          //     style: ElevatedButton.styleFrom(
+          //       backgroundColor: AppPalette.green3Color,
+          //       foregroundColor: Colors.white,
+          //       shape: const RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.all(Radius.circular(20))),
+          //       minimumSize: const Size(250, 40),
+          //     ),
+          //     child: const Text(
+          //       'Đổi mật khẩu',
+          //       style: TextStyle(fontSize: 16),
+          //     )),
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: ElevatedButton(

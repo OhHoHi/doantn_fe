@@ -1,15 +1,17 @@
 
 import 'package:doan_tn/auth/login/model/login_response.dart';
+import 'package:doan_tn/home/home_user/view/user_page.dart';
+import 'package:doan_tn/home/home_user/view/user_pay_screen.dart';
 import 'package:doan_tn/home/model/cart_response.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-
+import 'package:intl/intl.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
-
 import '../../../../auth/login/model/test_luu_user.dart';
 import '../../../../base/controler/base_provider.dart';
+import '../../../../base/controler/consumer_base.dart';
 import '../../../../base/widget/SkeletonTab.dart';
 import '../../../../base/widget/dialog_base.dart';
 import '../../../../values/apppalette.dart';
@@ -27,6 +29,7 @@ class _UserCartTabState extends State<BodyUserCartTab> {
   late ProductProvider productProvider;
   late LoginResponse user;
 
+
   @override
   void initState() {
     // TODO: implement initState
@@ -37,147 +40,27 @@ class _UserCartTabState extends State<BodyUserCartTab> {
       productProvider.getListCart(user.user.id);
       print("lay id duoc khong ${user.user.id}");
     });
-    print("lay duoc khong ${productProvider.totalAmount}");
-
+    productProvider.isAllSelected = false;
   }
 
-
-  @override
-  Widget build(BuildContext context) {
-    return SkeletonTab(
-      title: 'Giỏ hàng',
-      // title: loginProvider.user!.token ?? '',
-      bodyWidgets:    Selector<ProductProvider, Status>(builder: (context, value, child) {
-        if (value == Status.loading) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ProgressHUD.of(context)?.show();
-          });
-          print('Bat dau load');
-        } else if (value == Status.loaded) {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            ProgressHUD.of(context)?.dismiss();
-          });
-          print("load thanh cong");
-        } else if (value == Status.error) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ProgressHUD.of(context)?.dismiss();
-            print('Load error r');
-          });
-        }
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            children: [
-              ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: productProvider.listCart.length,
-                itemBuilder: (context, index) {
-                  return ProductCartWidget(
-                    cartResponse: productProvider.listCart[index],
-                    productProvider: productProvider,
-                    context: context,
-                  );
-                },
-              ),
-              const SizedBox(height: 100)
-            ],
-          ),
-        );
-      }, selector: (context, pro) {
-        return pro.statusListCart;
-      }),
-      isBack: false,
-      bottomSheetWidgets: BottomSheetCart(productProvider: productProvider),
-    );
+  String formatPrice(int price) {
+    final formatter = NumberFormat('#,###');
+    return formatter.format(price);
   }
 
-}
+  late bool isSelected = false;
 
 
-class BottomSheetCart extends StatelessWidget {
-  const BottomSheetCart({
-    super.key,
-    required this.productProvider,
-  });
-  final ProductProvider productProvider;
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Colors.grey, width: 1)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                const Text(
-                  'Tổng tiền:',
-                  style: TextStyle(color: AppPalette.textColor, fontSize: 18),
-                ),
-                const Spacer(),
-                Selector<ProductProvider, Status>(builder: (context, value, child) {
-                  if (value == Status.loading) {
-                    print('Bat dau load');
-                  } else if (value == Status.loaded) {
-                    print("load thanh cong");
-                  } else if (value == Status.error) {
-                  }
-                  return Text(
-                    '${productProvider.totalAmount}',
-                    style: const TextStyle(color: AppPalette.textColor, fontSize: 18),
-                  );
-                }, selector: (context, pro) {
-                  return pro.statusListCart;
-                }),
-              ],
-            ),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: AppPalette.green3Color,
-                  foregroundColor: Colors.white,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(25))),
-                  minimumSize: const Size(double.infinity, 40)),
-              child: const Text('Thanh toán'),
-            ),
-          ],
-        ),
-      ),
-    );
-
-  }
-}
-
-class ProductCartWidget extends StatelessWidget {
-  const ProductCartWidget({
-    super.key,
-    required this.cartResponse,
-    required this.productProvider,
-    required this.context,
-  });
-
-  final CartResponse cartResponse;
-  final ProductProvider productProvider;
-  final BuildContext context;
-
-  //final ProductModel productResponse;
   Future<void> _deleteCart(int id) async {
     try {
       await productProvider.deleteCart(id);
       if (productProvider.checkDeleteCart == true) {
-        productProvider.getListCart(cartResponse.user.id);
+       //productProvider.getListCart(user.user.id);
         // ScaffoldMessenger.of(context).showSnackBar(
         //   SnackBar(content: Text('Product added successfully')),
         // );
-        showDialog(
+       showDialog(
             context: context,
             builder: (context) {
               return DialogBase(
@@ -185,6 +68,14 @@ class ProductCartWidget extends StatelessWidget {
                 content: 'Đã XÓA sản phẩm khỏi giỏ hàng thành công',
                 icon: AppAssets.icoDefault,
                 button: true,
+                function:(){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserPage(selectedIndex: 2),
+                    ),
+                  );
+                } ,
               );
             });
       } else {
@@ -219,8 +110,80 @@ class ProductCartWidget extends StatelessWidget {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
+    return SkeletonTab(
+      title: 'Giỏ hàng',
+      // title: loginProvider.user!.token ?? '',
+      bodyWidgets:Selector<ProductProvider, Status>(builder: (context, value, child) {
+        if (value == Status.loading) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ProgressHUD.of(context)?.show();
+          });
+          print('Bat dau load');
+        } else if (value == Status.loaded) {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            ProgressHUD.of(context)?.dismiss();
+          });
+          print("load thanh cong");
+        } else if (value == Status.error) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ProgressHUD.of(context)?.dismiss();
+            print('Load error r');
+          });
+        }
+        else if (value == Status.noData) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ProgressHUD.of(context)?.dismiss();
+          });
+          return  const Center(child: Text('Ban khong có sản phẩm nào trong giỏ hàng'));
+        }
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        productProvider.selectAll();
+                      },
+                      child: const Text(
+                        'Tất cả',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: "Open Sans",
+                            fontWeight: FontWeight.w700,
+                            color: Color.fromRGBO(0, 104, 133, 1)),
+                      )),
+                ],
+              ),
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: productProvider.listCart.length,
+                itemBuilder: (context, index) {
+                  return buildData(productProvider, productProvider.listCart[index] ,index);
+                },
+              ),
+              const SizedBox(height: 100)
+            ],
+          ),
+        );
+      }, selector: (context, pro) {
+        return pro.statusListCart;
+      }),
+      isBack: false,
+      bottomSheetWidgets: BottomSheetCart(
+        productProvider: productProvider,
+        productPayList: productProvider.selectedProducts,
+      ),
+    );
+  }
+
+  Widget buildData(ProductProvider productProvider , CartResponse cartResponse , int index ){
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Container(
@@ -232,48 +195,72 @@ class ProductCartWidget extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: Row(
             children: [
+              Selector<ProductProvider, bool>(
+                selector: (context, provider) =>
+                    provider.selectedProducts.contains(productProvider.listCart[index]),
+                builder: (context, isSelected, child) {
+                  return Checkbox(
+                    checkColor: Colors.white,
+                    value: isSelected,
+                    onChanged: (value) {
+                     // productProvider.toggleProductSelection(productProvider.listCart[index]);
+                          setState(() {
+                            productProvider.toggleProductSelection(productProvider.listCart[index]);
+                          });
+                    },
+                  );
+                },
+              ),
+              // Checkbox(
+              //   checkColor: Colors.white,
+              //   value: productProvider.selectedProducts.contains(productProvider.listCart[index]),
+              //   onChanged: (value) {
+              //     setState(() {
+              //       productProvider.toggleProductSelection(productProvider.listCart[index]);
+              //     });
+              //   },
+              // ),
               Selector<ProductProvider, Status>(
                   builder: (context, value, child) {
-                if (value == Status.loading) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    ProgressHUD.of(context)?.show();
-                  });
-                  print('Bat dau load');
-                } else if (value == Status.loaded) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) async {
-                    ProgressHUD.of(context)?.dismiss();
-                  });
-                  print("load thanh cong");
-                } else if (value == Status.error) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    ProgressHUD.of(context)?.dismiss();
-                    print('Load error r');
-                  });
-                }
-                final images =
+                    if (value == Status.loading) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        ProgressHUD.of(context)?.show();
+                      });
+                      print('Bat dau load');
+                    } else if (value == Status.loaded) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) async {
+                        ProgressHUD.of(context)?.dismiss();
+                      });
+                      print("load thanh cong");
+                    } else if (value == Status.error) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        ProgressHUD.of(context)?.dismiss();
+                        print('Load error r');
+                      });
+                    }
+                    final images =
                     productProvider.images[cartResponse.product.id.toString()];
-                if (images != null && images.isNotEmpty) {
-                  return Container(
-                    height: 90,
-                    width: 100,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      // image: DecorationImage(
-                      //     image: NetworkImage(product.imageUrl), fit: BoxFit.cover),
-                    ),
-                    child: Image.memory(
-                      images.first,
-                      fit: BoxFit.cover,
-                    ),
-                  );
-                } else {
-                  return const SizedBox(
-                    height: 90,
-                    width:
-                        100, // Placeholder hoặc widget khác để xử lý trường hợp không có ảnh
-                  );
-                }
-              }, selector: (context, pro) {
+                    if (images != null && images.isNotEmpty) {
+                      return Container(
+                        height: 90,
+                        width: 100,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          // image: DecorationImage(
+                          //     image: NetworkImage(product.imageUrl), fit: BoxFit.cover),
+                        ),
+                        child: Image.memory(
+                          images.first,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    } else {
+                      return const SizedBox(
+                        height: 90,
+                        width: 100,
+                      );
+                    }
+                  }, selector: (context, pro) {
                 return pro.statusListProduct;
               }),
               const SizedBox(width: 10),
@@ -286,7 +273,7 @@ class ProductCartWidget extends StatelessWidget {
                       children: [
                         SizedBox(
                           //height: 90,
-                          width: 175,
+                          width: 175-39,
                           child: Text(
                             cartResponse.product.name,
                             maxLines: 1,
@@ -306,79 +293,99 @@ class ProductCartWidget extends StatelessWidget {
                             ))
                       ],
                     ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "${cartResponse.product.price}",
-                          style: const TextStyle(
-                              fontSize: 16, color: AppPalette.textColor),
-                        ),
-                        const Spacer(),
-                        IconButton(
-                          onPressed: () {
-                            productProvider.increaseQuantity(cartResponse.id , cartResponse.user.id);
-                            //productProvider.getListCart(cartResponse.user.id);
-                          },
-                          icon: const Icon(
-                            Icons.add,
-                            size: 15,
-                            color: Colors.grey,
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            shape: CircleBorder(
-                              side: BorderSide(
-                                  width: 1,
-                                  color: Colors.grey.withOpacity(0.5)),
-                            ),
-                          ),
-                        ),
-                        Selector<ProductProvider, Status>(
-                            builder: (context, value, child) {
+                    Selector<ProductProvider, Status>(
+                        builder: (context, value, child) {
                           if (value == Status.loading) {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               ProgressHUD.of(context)?.show();
                             });
-                            print('Bat dau load');
+                            print('Bat dau load $value' );
                           } else if (value == Status.loaded) {
                             WidgetsBinding.instance
                                 .addPostFrameCallback((_) async {
                               ProgressHUD.of(context)?.dismiss();
                             });
-                            print("load thanh cong");
+
+                            print("load thanh cong $value");
                           } else if (value == Status.error) {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               ProgressHUD.of(context)?.dismiss();
-                              print('Load error r');
+                              print('Load error r $value');
                             });
                           }
-                          return Text(
-                            "${cartResponse.quantity}",
-                            style: const TextStyle(
-                                fontSize: 18, color: AppPalette.textColor),
-                          );
+                          return
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  formatPrice(cartResponse.product.price),
+                                  style: const TextStyle(
+                                      fontSize: 16, color: AppPalette.textColor),
+                                ),
+                                const Spacer(),
+                                IconButton(
+                                  onPressed: () {
+                                    // if (productProvider.selectedProducts.contains(productProvider.listCart[index])) {
+                                    //   productProvider.increaseQuantity(cartResponse.id, cartResponse.user.id);
+                                    // }
+                                    setState(() {
+                                      if (productProvider.selectedProducts.contains(productProvider.listCart[index])) {
+                                        productProvider.increaseQuantity(cartResponse.id, cartResponse.user.id);
+                                      }
+                                    });
+                                  //  productProvider.increaseQuantity(cartResponse.id , cartResponse.user.id);
+                                  },
+                                  icon: Icon(
+                                    Icons.add,
+                                    size: 15,
+                                    color: productProvider.selectedProducts.contains(productProvider.listCart[index]) ? Colors.grey : Colors.grey.withOpacity(0.1),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    shape: CircleBorder(
+                                      side: BorderSide(
+                                          width: 1,
+                                          color: productProvider.selectedProducts.contains(productProvider.listCart[index]) ? Colors.grey : Colors.grey.withOpacity(0.1),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  "${productProvider.listCart[index].quantity}",
+                                  style: const TextStyle(
+                                      fontSize: 16, color: AppPalette.textColor),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    // if (productProvider.selectedProducts.contains(productProvider.listCart[index])) {
+                                    //   productProvider.decreaseQuantity(cartResponse.id, cartResponse.user.id);
+                                    // }
+                                    setState(() {
+                                      if (productProvider.selectedProducts.contains(productProvider.listCart[index])) {
+                                        productProvider.decreaseQuantity(cartResponse.id, cartResponse.user.id);
+                                      }
+                                    });
+                                    //productProvider.decreaseQuantity(cartResponse.id , cartResponse.user.id);
+                                 //   productProvider.updateTotalAmount();
+                                  },
+                                  icon:  Icon(
+                                    Icons.remove,
+                                    size: 15,
+                                    color: productProvider.selectedProducts.contains(productProvider.listCart[index]) ? Colors.grey : Colors.grey.withOpacity(0.1),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    shape: CircleBorder(
+                                      side: BorderSide(
+                                          width: 1,
+                                          color: productProvider.selectedProducts.contains(productProvider.listCart[index]) ? Colors.grey : Colors.grey.withOpacity(0.1),),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
                         }, selector: (context, pro) {
-                          return pro.statusQuantity;
-                        }),
-                        IconButton(
-                          onPressed: () {
-                            productProvider.decreaseQuantity(cartResponse.id , cartResponse.user.id);
-                          },
-                          icon: const Icon(
-                            Icons.remove,
-                            size: 15,
-                            color: Colors.grey,
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            shape: CircleBorder(
-                              side: BorderSide(
-                                  width: 1,
-                                  color: Colors.grey.withOpacity(0.5)),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      return pro.statusListCart;
+                    }),
+
                   ],
                 ),
               ),
@@ -389,3 +396,99 @@ class ProductCartWidget extends StatelessWidget {
     );
   }
 }
+
+
+class BottomSheetCart extends StatelessWidget {
+  const BottomSheetCart({
+    Key? key,
+    required this.productProvider, required this.productPayList,
+  }) : super(key: key);
+  final ProductProvider productProvider;
+  final List<CartResponse> productPayList;
+
+  String formatPrice(int price) {
+    final formatter = NumberFormat('#,###');
+    return formatter.format(price);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Colors.grey, width: 1)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                const Text(
+                  'Tổng tiền:',
+                  style: TextStyle(color: AppPalette.textColor, fontSize: 18),
+                ),
+                const Spacer(),
+                // Selector<ProductProvider, Status>(builder: (context, value, child) {
+                //   if (value == Status.loading) {
+                //     print('Bat dau load');
+                //   } else if (value == Status.loaded) {
+                //     print("load thanh cong");
+                //   } else if (value == Status.error) {
+                //   }
+                //   return Text(
+                //     // '${productProvider.totalAmount}',
+                //     '${productProvider.totalAmountProvider}',
+                //     style: const TextStyle(color: AppPalette.textColor, fontSize: 18),
+                //   );
+                // }, selector: (context, pro) {
+                //   return pro.statusListCart;
+                // }),
+                Selector<ProductProvider, int>(
+                  builder: (context, totalAmount, child) {
+                    return Text(
+                      '${formatPrice(totalAmount)} vnd',
+                      style: const TextStyle(color: AppPalette.textColor, fontSize: 18),
+                    );
+                  },
+                  selector: (context, provider) => provider.totalAmountProvider,
+                ),
+              ],
+            ),
+            const Spacer(),
+            ElevatedButton(
+              onPressed: () {
+                if(productProvider.totalAmountProvider == 0){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Chưa có sản phẩm nào được chọn')),
+                  );
+                  return;
+                }else{
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserPayScreen(productPayList:productPayList, productProvider: productProvider),
+                    ),
+                  );
+                }
+
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: AppPalette.green3Color,
+                  foregroundColor: Colors.white,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25))),
+                  minimumSize: const Size(double.infinity, 40)),
+              child: const Text('Mua hàng'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+  }
+}
+
+
+

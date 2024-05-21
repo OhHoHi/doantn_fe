@@ -21,10 +21,26 @@ class AppStyles {
       fontFamily: FontFamily.nutino, fontSize: 14, color: Colors.white);
   static TextStyle nuntio_14_black = TextStyle(
       fontFamily: FontFamily.nutino, fontSize: 14, color: Colors.black);
+  static TextStyle nuntio_14_blue = TextStyle(
+      fontFamily: FontFamily.nutino, fontSize: 14, color: Colors.blue);
+  static TextStyle nuntio_14_red = TextStyle(
+      fontFamily: FontFamily.nutino, fontSize: 14, color: Colors.red);
   static TextStyle nuntio1_14 = TextStyle(
       fontFamily: FontFamily.nutino1, fontSize: 14, color: Colors.white);
+  static TextStyle nuntio1_14_black = TextStyle(
+      fontFamily: FontFamily.nutino1, fontSize: 14, color: Colors.black);
+  static TextStyle nuntio1_14_red = TextStyle(
+      fontFamily: FontFamily.nutino1, fontSize: 14, color: Colors.red);
+  static TextStyle nuntio1_14_green = TextStyle(
+      fontFamily: FontFamily.nutino1, fontSize: 14, color: Colors.green);
+  static TextStyle nuntio1_20_black = TextStyle(
+      fontFamily: FontFamily.nutino1, fontSize: 20, color: Colors.black);
+  static TextStyle nuntio1_20_red = TextStyle(
+      fontFamily: FontFamily.nutino1, fontSize: 20, color: Colors.red);
   static TextStyle nuntio_18 = TextStyle(
       fontFamily: FontFamily.nutino, fontSize: 18, color: Colors.black);
+  static TextStyle nuntio_18_red = TextStyle(
+      fontFamily: FontFamily.nutino, fontSize: 18, color: Colors.red);
   static TextStyle nuntio_30 = TextStyle(
       fontFamily: FontFamily.nutino, fontSize: 30, color: Colors.black);
   static TextStyle nuntio_20 = TextStyle(

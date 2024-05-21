@@ -1,6 +1,7 @@
 import 'package:doan_tn/home/home_admin/view/profile_tab.dart';
 import 'package:flutter/material.dart';
 import '../../../values/apppalette.dart';
+import '../../home_user/pay/view/order_pay_screen.dart';
 import 'admin_product_tab.dart';
 
 class AdminPage extends StatefulWidget {
@@ -17,8 +18,8 @@ class _AdminPageState extends State<AdminPage> {
   static final List<Widget> _widgetOptions = <Widget>[
     const AdminProductTab(),
     const SizedBox(),
-    const SizedBox(),
-    ProfileTab(),
+    OrderPayScreen(initialTabIndex: 0 , isAdmin: true),
+    const ProfileTab(),
   ];
 
   void _onItemTapped(int index) {
@@ -43,7 +44,7 @@ class _AdminPageState extends State<AdminPage> {
           BottomNavigationBarItem(
               icon: Icon(Icons.area_chart), label: 'Thống kê'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.notifications), label: 'Thông báo'),
+              icon: Icon(Icons.payment), label: 'Các đơn cần xác nhận'),
           BottomNavigationBarItem(
               icon: Icon(Icons.account_circle), label: 'Người dùng'),
         ],

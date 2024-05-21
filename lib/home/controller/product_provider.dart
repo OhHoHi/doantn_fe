@@ -8,10 +8,7 @@ import 'package:doan_tn/home/model/product_reponse.dart';
 import 'package:doan_tn/home/model/product_add_request.dart';
 import 'package:doan_tn/home/service/product_services.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import '../../base/controler/base_provider.dart';
-import '../../base/services/dio_option.dart';
 import '../home_user/search_tab/model/serch_request.dart';
 import '../model/brand_response.dart';
 import '../model/product_edit_request.dart';
@@ -366,15 +363,7 @@ class ProductProvider extends BaseProvider<ProductService> {
       });
     }
   }
-  // Phương thức để tính toán tổng giá từ danh sách sản phẩm
-  double _calculateTotalAmount() {
-    double total = 0;
-    for (CartResponse cartResponse in listCart) {
-      total += cartResponse.product.price * cartResponse.quantity;
-    }
-    return total;
-  }
-  double totalAmount = 0;
+
   Future<void> getListCart(int userId) async {
     resetStatus();
     try {
@@ -383,18 +372,23 @@ class ProductProvider extends BaseProvider<ProductService> {
       });
      // startLoading();
       listCart = await service.getListCart(userId);
-      totalAmount = _calculateTotalAmount(); // Tính toán tổng giá sau khi danh sách sản phẩm đã được cập nhật
       await getImagesForCartProducts(listCart);
       finishLoading((){
         statusListCart = Status.loaded;
       });
-      //finishLoading();
+      if(listCart.isEmpty){
+        receivedNoData(() {
+          statusListCart = Status.noData;
+        });
+        canLoadMoreSearch= false;
+      }
+     // finishLoading();
     } on DioException catch (e) {
       messagesError = e.message ?? 'Co loi he thong';
       receivedError((){
         statusListCart = Status.error;
       });
-      //receivedError();
+     // receivedError();
       // showDialog(
       //   context: context,
       //   builder: (BuildContext context) {
@@ -442,24 +436,34 @@ class ProductProvider extends BaseProvider<ProductService> {
     resetStatus();
     try {
       startLoading((){
-        statusDeleteCart = Status.loading;
+        statusListCart = Status.loading;
       });
       // startLoading();
       checkDeleteCart = await service.deleteCart(id);
-      if(checkDelete == true){
+      if(checkDeleteCart == true){
+        if(selectedProducts.isNotEmpty){
+          // Find the index of the product to be deleted in the selectedProducts list
+          int index = selectedProducts.indexWhere((element) => element.id == id);
+          if (index != -1) {
+            // Deduct the price of the deleted product from the total amount
+            totalAmountProvider -= selectedProducts[index].product.price * selectedProducts[index].quantity;
+            // Remove the product from the selectedProducts list
+            selectedProducts.removeAt(index);
+          }
+        }
         finishLoading(() {
-          statusDeleteCart = Status.loaded;
+          statusListCart = Status.loaded;
         });
       }
       else{
         receivedError(() {
-          statusDeleteCart = Status.error;
+          statusListCart = Status.error;
         });
       }
     } on DioException catch (e) {
       messagesError = e.message ?? 'Co loi he thong';
       receivedError((){
-        statusDeleteCart = Status.error;
+        statusListCart = Status.error;
       });
       // receivedError();
       // showDialog(
@@ -470,74 +474,139 @@ class ProductProvider extends BaseProvider<ProductService> {
       // );
     }
   }
-  Future<void> increaseQuantity(int cartItemId , int id)async {
+  Future<void> increaseQuantity(int cartItemId, int id) async {
     resetStatus();
     try {
-      startLoading((){
-        statusQuantity = Status.loading;
+      startLoading(() {
+        statusListCart = Status.loading;
       });
-      // startLoading();
+      //startLoading();
       checkIncreaseQuantity = await service.increaseQuantity(cartItemId);
-      if(checkIncreaseQuantity == true){
-        getListCart(id);
+      if (checkIncreaseQuantity == true) {
+        // Tăng số lượng sản phẩm trong danh sách selectedProducts
+        for (var selectedProduct in selectedProducts) {
+          if (selectedProduct.id == cartItemId) {
+            selectedProduct.quantity++;
+            break;
+          }
+        }
+        // Cập nhật danh sách sản phẩm và tổng số tiền
+        updateTotalAmount();
+       // await getListCart(id);
+       //  notifyListeners();
         finishLoading(() {
-          statusQuantity = Status.loaded;
+          statusListCart = Status.loaded;
         });
+        //finishLoading();
+
       }
-      else{
-        receivedError(() {
-          statusQuantity = Status.error;
-        });
-      }
+
     } on DioException catch (e) {
       messagesError = e.message ?? 'Co loi he thong';
-      receivedError((){
-        statusQuantity = Status.error;
+      receivedError(() {
+        statusListCart = Status.error;
       });
-      // receivedError();
-      // showDialog(
-      //   context: context,
-      //   builder: (BuildContext context) {
-      //     return DialogBase(title:"Thất bại", icon: AppAssets.iconFail,content: "Có lỗi hệ thống",);
-      //   },
-      // );
+      //receivedError();
     }
   }
 
-  Future<void> decreaseQuantity(int cartItemId , int id)async {
+  Future<void> decreaseQuantity(int cartItemId, int id) async {
     resetStatus();
     try {
-      startLoading((){
-        statusQuantity = Status.loading;
+      startLoading(() {
+        statusListCart = Status.loading;
       });
       // startLoading();
       checkDecreaseQuantity = await service.decreaseQuantity(cartItemId);
-      if(checkDecreaseQuantity == true){
-        getListCart(id);
+      if (checkDecreaseQuantity == true) {
+        // Giảm số lượng sản phẩm trong danh sách selectedProducts
+        for (var selectedProduct in selectedProducts) {
+          if (selectedProduct.id == cartItemId) {
+            selectedProduct.quantity--;
+            if (selectedProduct.quantity == 0) {
+              // Nếu số lượng giảm về 0, loại bỏ sản phẩm khỏi danh sách selectedProducts
+              selectedProducts.remove(selectedProduct);
+            }
+            break;
+          }
+        }
+        // Cập nhật danh sách sản phẩm và tổng số tiền
+        updateTotalAmount();
+        //await getListCart(id);
+        notifyListeners();
         finishLoading(() {
-          statusQuantity = Status.loaded;
+          statusListCart = Status.loaded;
         });
+       // finishLoading();
       }
-      else{
-        receivedError(() {
-          statusQuantity = Status.error;
-        });
-      }
+
+
     } on DioException catch (e) {
       messagesError = e.message ?? 'Co loi he thong';
-      receivedError((){
-        statusQuantity = Status.error;
+      receivedError(() {
+        statusListCart = Status.error;
       });
-      // receivedError();
-      // showDialog(
-      //   context: context,
-      //   builder: (BuildContext context) {
-      //     return DialogBase(title:"Thất bại", icon: AppAssets.iconFail,content: "Có lỗi hệ thống",);
-      //   },
-      // );
+     // receivedError();
     }
   }
+  // lấy tổng
 
+  int totalAmountProvider = 0;
+  List<CartResponse> selectedProducts = []; // List to store selected products
+  void toggleProductSelection(CartResponse product) {
+    int index = selectedProducts.indexWhere((element) => element.id == product.id);
+    if (index != -1) {
+      selectedProducts.removeAt(index);
+    } else {
+      selectedProducts.add(product);
+    }
+    updateTotalAmount();
+    notifyListeners();
+  }
+
+  void updateTotalAmount() {
+    int totalAmount = 0;
+    for (var selectedProduct in selectedProducts) {
+      totalAmount += selectedProduct.product.price * selectedProduct.quantity;
+    }
+    totalAmountProvider = totalAmount;
+    print("${totalAmountProvider}");
+    notifyListeners();
+
+  }
+
+  bool isAllSelected = false;
+  void selectAll() {
+
+    if(selectedProducts.length == listCart.length){
+      isAllSelected = true;
+    }
+    if (isAllSelected) {
+      selectedProducts.clear();
+    } else {
+      selectedProducts = listCart.map((product) => product).toList();
+    }
+    isAllSelected = !isAllSelected;
+    updateTotalAmount();
+    notifyListeners();
+
+    print(isAllSelected);
+  }
+
+  void selectAll1() {
+    if (selectedProducts.length == listCart.length) {
+      isAllSelected = true;
+    }
+    if (isAllSelected) {
+      selectedProducts.clear();
+    } else {
+      selectedProducts = listCart.map((product) => product).toList();
+    }
+    isAllSelected = !isAllSelected;
+    print(isAllSelected); // In giá trị của isAllSelected để kiểm tra
+    updateTotalAmount();
+    notifyListeners(); // Đảm bảo rằng bạn gọi notifyListeners() sau khi cập nhật dữ liệu
+  }
 
   //tìm kiếm
   Status statusListSearch = Status.none;
@@ -589,6 +658,7 @@ class ProductProvider extends BaseProvider<ProductService> {
       startLoading(() {
         statusListSearch = Status.loading;
       });
+      print("name : $productName");
       listSearch = await service.getListSearch(
           SearchRequest(
               brandId: selectedBrand?.id,
@@ -608,6 +678,7 @@ class ProductProvider extends BaseProvider<ProductService> {
                   : null
           )
       );
+      print("name 2 : $productName");
       for (var product in listSearch) {
         await getFirstImageForProduct(product);
       }
@@ -627,6 +698,7 @@ class ProductProvider extends BaseProvider<ProductService> {
         receivedNoData(() {
           statusListSearch = Status.noData;
         });
+        canLoadMoreSearch= false;
       }
       else{
         finishLoading(() {

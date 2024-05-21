@@ -181,6 +181,7 @@ class _BodyNotifyTabState extends State<BodyNotifyTab> {
   Widget buildData(NotifyProvider provider) {
     return Expanded(
       child:
+          // chưa làm loadmore nên chưa lướt đuwocj
             RefreshLoadmore(
               isLastPage: false,
               onRefresh: _refresh,

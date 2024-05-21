@@ -40,6 +40,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
               flex: 6,
               child: TextFormField(
                 onFieldSubmitted: (value) {
+                  widget.productProvider.resetPageSearch();
                   widget.productProvider.search(value);
                 },
                 style:

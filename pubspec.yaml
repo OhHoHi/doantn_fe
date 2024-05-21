@@ -48,8 +48,9 @@ dev_dependencies:
   photo_view: ^0.15.0
   image_picker: ^1.0.7
   dotted_border: ^2.1.0
-  intl: ^0.17.0 # để hiện thí số tiền theo dạng đẹp
+  intl: ^0.18.1 # để hiện thí số tiền theo dạng đẹp
   refresh_loadmore: ^2.0.5
+  pay: ^1.0.8
 
 
 
