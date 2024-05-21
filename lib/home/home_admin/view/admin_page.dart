@@ -1,3 +1,4 @@
+import 'package:doan_tn/home/home_admin/thongke_tab/view/thongke_screen.dart';
 import 'package:doan_tn/home/home_admin/view/profile_tab.dart';
 import 'package:flutter/material.dart';
 import '../../../values/apppalette.dart';
@@ -17,7 +18,7 @@ class _AdminPageState extends State<AdminPage> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     const AdminProductTab(),
-    const SizedBox(),
+    const ThongKeScreen(),
     OrderPayScreen(initialTabIndex: 0 , isAdmin: true),
     const ProfileTab(),
   ];

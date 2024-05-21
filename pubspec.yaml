@@ -51,6 +51,7 @@ dev_dependencies:
   intl: ^0.18.1 # để hiện thí số tiền theo dạng đẹp
   refresh_loadmore: ^2.0.5
   pay: ^1.0.8
+  fl_chart: ^0.35.0
 
 
 

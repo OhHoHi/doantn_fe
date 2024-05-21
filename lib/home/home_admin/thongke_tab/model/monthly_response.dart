@@ -7,7 +7,7 @@ String monthlyResponseToJson(List<MonthlyResponse> data) => json.encode(List<dyn
 class MonthlyResponse {
   int month;
   int year;
-  int revenue;
+  double revenue;
 
   MonthlyResponse({
     required this.month,
