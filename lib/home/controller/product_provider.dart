@@ -474,6 +474,31 @@ class ProductProvider extends BaseProvider<ProductService> {
       // );
     }
   }
+  Future<void> deleteCartPay(int id)async {
+    resetStatus();
+    try {
+      startLoading((){
+        statusDeleteCart = Status.loading;
+      });
+      // startLoading();
+      checkDeleteCart = await service.deleteCart(id);
+      if(checkDeleteCart == true){
+        finishLoading(() {
+          statusDeleteCart = Status.loaded;
+        });
+      }
+      else{
+        receivedError(() {
+          statusDeleteCart = Status.error;
+        });
+      }
+    } on DioException catch (e) {
+      messagesError = e.message ?? 'Co loi he thong';
+      receivedError((){
+        statusDeleteCart = Status.error;
+      });
+    }
+  }
   Future<void> increaseQuantity(int cartItemId, int id) async {
     resetStatus();
     try {

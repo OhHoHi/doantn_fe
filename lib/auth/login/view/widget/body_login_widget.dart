@@ -90,7 +90,7 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                         SecureStorage().delete('password');
                       }
                       if(loginProvider.checkAdmin!){
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) => AdminPage(
                               selectedIndex: 0,
                               // data: loginProvider.user!,
@@ -281,7 +281,7 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                             ),
                           ),
                           Container(
-                            margin: EdgeInsets.only(right: 10.2),
+                            margin: const EdgeInsets.only(right: 10.2),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
@@ -345,7 +345,7 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                     ),
                     InkWell(
                       onTap: (){
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) => const RegisterView(
                             )));
                       },

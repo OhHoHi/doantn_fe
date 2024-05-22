@@ -144,7 +144,7 @@ class _OrderStatus0State extends State<BodyOrderStatus0> {
           }
           final orderItems = paymentProvider.orderItemsMap[payResponse.id] ?? [];
           if (orderItems.isEmpty) {
-            return Center(child: Text("Không có mục đơn hàng nào"));
+            return const SizedBox();
           }
           final orderItem = orderItems.first; // Chỉ lấy item đầu tiên
           final images = paymentProvider.images[orderItem.product.id.toString()];
@@ -152,14 +152,6 @@ class _OrderStatus0State extends State<BodyOrderStatus0> {
           return Column(
             children: [
               InkWell(
-                // onTap: (){
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (context) => OrderPayDetailScreen( payResponse: payResponse , isAdmin: widget.isAdmin,),
-                //     ),
-                //   );
-                // },
                 onTap:() async{
                   final resul = await Navigator.of(context).push(
                     MaterialPageRoute(

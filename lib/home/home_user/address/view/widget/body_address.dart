@@ -54,6 +54,45 @@ class _BodyAddressState extends State<BodyAddress> {
           print('Load error r');
         });
       }
+      else if (value == Status.noData) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ProgressHUD.of(context)?.dismiss();
+          print('Load error r');
+        });
+        return SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("Bạn chưa có địa chỉ nào"),
+              const SizedBox(height: 40,),
+              ElevatedButton(
+                onPressed:() async{
+                  final resul = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => AddressCRUDScreen(),
+                    ),
+                  );
+                  if(resul == true) {
+                    addressProvider.getListAddress(user.user.id);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppPalette.green3Color,
+                  foregroundColor: Colors.white,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25))),
+                  minimumSize: const Size(200, 50),
+                ),
+                child: const Text(
+                  'Thêm địa chỉ mới',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
       return buildData(addressProvider);
     }, selector: (context, pro) {
       return pro.statusListAddress;

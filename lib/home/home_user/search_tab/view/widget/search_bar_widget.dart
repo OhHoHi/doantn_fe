@@ -7,8 +7,8 @@ import 'bottom_shet_widget.dart';
 class SearchBarWidget extends StatefulWidget {
   SearchBarWidget({required this.hintText,super.key, required this.productProvider, required this.brandProvider});
 
-    final String hintText;
-   final ProductProvider productProvider;
+  final String hintText;
+  final ProductProvider productProvider;
   final BrandProvider brandProvider;
 
 
@@ -56,19 +56,19 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
             ),
             Expanded(
                 child: IconButton(
-                    onPressed: () {
-                      showModalBottomSheet<void>(
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        builder: (BuildContext context) {
-                          return  BottomSheetWidget(
-                            productProvider: widget.productProvider,
-                            listBrand: widget.brandProvider.listBrand,
-                          );
-                        },
-                      );
-                    },
-                    icon: Icon(Icons.filter_alt),
+                  onPressed: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (BuildContext context) {
+                        return  BottomSheetWidget(
+                          productProvider: widget.productProvider,
+                          listBrand: widget.brandProvider.listBrand,
+                        );
+                      },
+                    );
+                  },
+                  icon: Icon(Icons.filter_alt),
                 )
             ),
             const SizedBox(

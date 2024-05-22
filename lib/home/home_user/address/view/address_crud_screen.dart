@@ -28,7 +28,7 @@ class AddressCRUDScreen extends StatelessWidget {
         // title: loginProvider.user!.token ?? '',
         bodyWidgets: BodyCRUDAddress(addressResponse: addressResponse),
         isBack: true,
-        isAddress: false,
+        isAddress: true,
       ),
     );
   }

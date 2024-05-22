@@ -179,6 +179,7 @@ class _UserCartTabState extends State<BodyUserCartTab> {
       bottomSheetWidgets: BottomSheetCart(
         productProvider: productProvider,
         productPayList: productProvider.selectedProducts,
+        user: user,
       ),
     );
   }
@@ -401,10 +402,12 @@ class _UserCartTabState extends State<BodyUserCartTab> {
 class BottomSheetCart extends StatelessWidget {
   const BottomSheetCart({
     Key? key,
-    required this.productProvider, required this.productPayList,
+    required this.productProvider, required this.productPayList,required this.user
   }) : super(key: key);
   final ProductProvider productProvider;
   final List<CartResponse> productPayList;
+  final LoginResponse user;
+
 
   String formatPrice(int price) {
     final formatter = NumberFormat('#,###');
@@ -458,19 +461,27 @@ class BottomSheetCart extends StatelessWidget {
             ),
             const Spacer(),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if(productProvider.totalAmountProvider == 0){
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Chưa có sản phẩm nào được chọn')),
                   );
                   return;
                 }else{
-                  Navigator.push(
+                  final resul = await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => UserPayScreen(productPayList:productPayList, productProvider: productProvider),
                     ),
                   );
+                  if(resul == true){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UserPage(selectedIndex: 2),
+                      ),
+                    );
+                  }
                 }
 
               },

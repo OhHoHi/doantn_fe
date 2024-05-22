@@ -15,8 +15,8 @@ class AppRoute {
       case '/':
         return _materialRoute(const LoginScreen());
 
-      case '/Register':
-        return _materialRoute(const RegisterView());
+      // case '/Register':
+      //   return _materialRoute(const RegisterView());
 
       // case '/Admin':
       //   return _materialRoute(const AdminPage());

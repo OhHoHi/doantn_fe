@@ -21,6 +21,7 @@ import '../../address/model/address_response.dart';
 import '../../address/view/address_crud_screen.dart';
 import '../../address/view/address_screen.dart';
 import '../../pay/controller/pay_controller.dart';
+import '../../pay/view/order_pay_screen.dart';
 
 class BodyUserPay extends StatefulWidget {
   const BodyUserPay(
@@ -70,33 +71,59 @@ class _BodyUserPayState extends State<BodyUserPay> {
     });
   }
 
-
   Future<void> _addPay() async {
-
     try {
-      await payProvider.addOrder(user.user.id, 0, widget.productProvider.totalAmountProvider, selectedAddress?.id ?? addressProvider.listAddress.first.id, widget.productPayList);
+        await payProvider.addOrder(
+            user.user.id,
+            0,
+            widget.productProvider.totalAmountProvider,
+            selectedAddress?.id ?? addressProvider.listAddress.first.id,
+            widget.productPayList);
       if (payProvider.checkAddOrder == true) {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text('Product added successfully')),
-        // );
-        showDialog(
-            context: context,
-            builder: (context) {
-              return DialogBase(
-                title: 'Thông báo',
-                content: 'Bạn đã đặt hàng thành công',
-                icon: AppAssets.icoDefault,
-                button: true,
-                // function:(){
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (context) => AdminPage(selectedIndex: 0),
-                //     ),
-                //   );
-                // } ,
-              );
-            });
+        // Xóa từng sản phẩm trong widget.productPayList bằng cách gọi hàm deleteCart
+        for (var product in widget.productPayList) {
+          await widget.productProvider.deleteCartPay(product.id);
+        }
+        if(widget.productPayList.isEmpty){
+          showDialog(
+              context: context,
+              builder: (context) {
+                return DialogBase(
+                  title: 'Thông báo',
+                  content: 'Đơn hàng này bạn đã đặt rồi',
+                  icon: AppAssets.icoDefault,
+                  button: false,
+                );
+              });
+        }
+        else{
+          showDialog(
+              context: context,
+              builder: (context) {
+                return DialogBase(
+                  title: 'Thông báo',
+                  content: 'Bạn đã đặt hàng thành công',
+                  icon: AppAssets.icoDefault,
+                  button: true,
+                  function: () async {
+                    final resul = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            OrderPayScreen(isAdmin: false, initialTabIndex: 0),
+                      ),
+                    );
+                    if (resul == true) {
+                      setState(() {
+                        setState(() {
+                          widget.productPayList.clear();
+                        });
+                      });
+                    }
+                  },
+                );
+              });
+        }
       } else {
         // ScaffoldMessenger.of(context).showSnackBar(
         //   SnackBar(content: Text('Failed to add product')),
@@ -109,14 +136,12 @@ class _BodyUserPayState extends State<BodyUserPay> {
                 content: 'Đặt hàng chưa thành công hãy quay lại sau',
                 icon: AppAssets.icoDefault,
                 button: true,
-
               );
             });
       }
-    }
-    catch (e) {
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add product')),
+        SnackBar(content: Text('Đặt hàng thất bại')),
       );
       // showDialog(
       //     context: context,
@@ -186,13 +211,21 @@ class _BodyUserPayState extends State<BodyUserPay> {
                   ProgressHUD.of(context)?.dismiss();
                 });
                 return ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
+                  onPressed: () async {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => AddressCRUDScreen(),
+                    //   ),
+                    // );
+                    final resul = await Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => AddressCRUDScreen(),
+                        builder: (_) => AddressCRUDScreen(),
                       ),
                     );
+                    if (resul == true) {
+                      addressProvider.getListAddress(user.user.id);
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: AppPalette.green3Color,
@@ -218,6 +251,8 @@ class _BodyUserPayState extends State<BodyUserPay> {
                       setState(() {
                         selectedAddress = address;
                       });
+                    } else {
+                      addressProvider.getListAddress(user.user.id);
                     }
                   },
                   child: Row(
@@ -461,16 +496,21 @@ class _BodyUserPayState extends State<BodyUserPay> {
                 const Text('Google Pay'),
               ],
             ),
-            const SizedBox(height: 70,),
+            const SizedBox(
+              height: 70,
+            ),
           ],
         ),
-      ), isBack: true,
+      ),
+      isBack: true,
       bottomSheetWidgets: BottomSheetPay(
         productProvider: widget.productProvider,
         selectedPaymentMethod: selectedPaymentMethod,
         onGooglePayResult: onGooglePayResult,
         paymentItems: paymentItems,
         payPressed: payPressed,
+        addressProvider: addressProvider,
+        user: user,
       ),
     );
   }
@@ -480,16 +520,20 @@ class BottomSheetPay extends StatelessWidget {
   BottomSheetPay({
     Key? key,
     required this.productProvider,
-    required this.selectedPaymentMethod ,
+    required this.selectedPaymentMethod,
     required this.payPressed,
     required this.onGooglePayResult,
     required this.paymentItems,
+    required this.addressProvider,
+    required this.user,
   }) : super(key: key);
   final ProductProvider productProvider;
   String selectedPaymentMethod;
   final Function(String) payPressed;
   final Function(dynamic) onGooglePayResult;
   final List<PaymentItem> paymentItems;
+  final AddressProvider addressProvider;
+  final LoginResponse user;
 
   String formatPrice(int price) {
     final formatter = NumberFormat('#,###');
@@ -500,28 +544,50 @@ class BottomSheetPay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 70,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          border: Border(top: BorderSide(color: Colors.grey, width: 1)),
-        ),
-      child:  Row(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Colors.grey, width: 1)),
+      ),
+      child: Row(
         children: [
           const Spacer(),
-           Column(
-             crossAxisAlignment: CrossAxisAlignment.end,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const SizedBox(height: 10,),
-              Text("Tổng tiền thanh toán" , style: AppStyles.nuntio_14_black,),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                "Tổng tiền thanh toán",
+                style: AppStyles.nuntio_14_black,
+              ),
               Text(
                 '${formatPrice(productProvider.totalAmountProvider)} vnđ',
                 style: AppStyles.nuntio_18_red,
               )
             ],
           ),
-          const SizedBox(width: 10,),
+          const SizedBox(
+            width: 10,
+          ),
           if (selectedPaymentMethod == 'Normal')
             ElevatedButton(
-              onPressed: () => payPressed(""),
+              onPressed: () async {
+                if (addressProvider.listAddress.isEmpty) {
+                  await addressProvider.getListAddress(user.user.id);
+                  if (addressProvider.listAddress.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text(
+                              'Không có địa chỉ nào, vui lòng thêm địa chỉ')),
+                    );
+                  } else {
+                    payPressed("");
+                  }
+                } else {
+                  payPressed("");
+                }
+              },
               style: ElevatedButton.styleFrom(
                   backgroundColor: AppPalette.green3Color,
                   foregroundColor: Colors.white,
@@ -534,7 +600,22 @@ class BottomSheetPay extends StatelessWidget {
             GooglePayButton(
               paymentConfiguration:
                   PaymentConfiguration.fromJsonString(defaultGooglePay),
-              onPaymentResult: onGooglePayResult,
+              onPaymentResult: (paymentResult) async {
+                if (addressProvider.listAddress.isEmpty) {
+                  await addressProvider.getListAddress(user.user.id);
+                  if (addressProvider.listAddress.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text(
+                              'Không có địa chỉ nào, vui lòng thêm địa chỉ')),
+                    );
+                  } else {
+                    onGooglePayResult(paymentResult);
+                  }
+                } else {
+                  onGooglePayResult(paymentResult);
+                }
+              },
               paymentItems: paymentItems,
               height: 70,
               type: GooglePayButtonType.buy,
@@ -546,6 +627,5 @@ class BottomSheetPay extends StatelessWidget {
         ],
       ),
     );
-
   }
 }

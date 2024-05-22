@@ -29,7 +29,7 @@ class AddressScreen extends StatelessWidget {
         // title: loginProvider.user!.token ?? '',
         bodyWidgets: BodyAddress(),
         isBack: true,
-        isAddress: false,
+        isAddress: true,
       ),
     );
   }

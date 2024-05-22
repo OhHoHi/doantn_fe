@@ -32,7 +32,7 @@ class DialogBase extends StatelessWidget {
                 ),
               ),
               child: const Text(
-                "Hủy",
+                "Xong",
                 style: TextStyle(
                     fontSize: 14,
                     fontFamily: 'Open Sans',
