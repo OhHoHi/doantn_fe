@@ -667,8 +667,10 @@ class ProductProvider extends BaseProvider<ProductService> {
   }
 
   void search(String nameSearch) {
-    productName = nameSearch;
-    getListSearch();
+    if(nameSearch != ""){
+      productName = nameSearch;
+      getListSearch();
+    }
   }
 
   void refreshAllSearch() {

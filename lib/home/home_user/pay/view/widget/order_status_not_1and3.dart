@@ -133,6 +133,11 @@ class _OrderStatusNot1end3State extends State<BodyOrderStatusNot1end3> {
               ProgressHUD.of(context)?.dismiss();
               print('Load error r');
             });
+          } else if (value == Status.noData) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ProgressHUD.of(context)?.dismiss();
+            });
+            return const Center(child: Text("Bạn không có đơn hàng nào"));
           }
           final orderItems = paymentProvider.orderItemsMap[payResponse.id] ?? [];
           if (orderItems.isEmpty) {

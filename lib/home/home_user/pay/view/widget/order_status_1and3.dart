@@ -94,7 +94,7 @@ class _OrderStatus1end3State extends State<BodyOrderStatus1end3> {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ProgressHUD.of(context)?.dismiss();
         });
-        return Center(child: const Text("Bạn không có đơn hàng nào"));
+        return const Center(child: Text("Bạn không có đơn hàng nào"));
       }
       return ListView.builder(
         physics: const AlwaysScrollableScrollPhysics(),

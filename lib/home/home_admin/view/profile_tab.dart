@@ -184,7 +184,7 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
                     Text('Các đơn cần xác nhận'),
                   ],
                 ),
-              ) :InkWell(
+              ) : InkWell(
                 onTap: (){
                   Navigator.push(
                     context,
@@ -214,6 +214,23 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
                   children: [
                     Icon(Icons.drive_eta_rounded),
                     Text('Đơn hàng của bạn'),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 20,),
+              InkWell(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OrderPayScreen(isAdmin: false,initialTabIndex:  2),
+                    ),
+                  );
+                },
+                child: const Column(
+                  children: [
+                    Icon(Icons.done_outline),
+                    Text('Đã giao'),
                   ],
                 ),
               ),

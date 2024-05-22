@@ -290,8 +290,6 @@ class PaymentProvider extends BaseProvider<PayService> {
       finishLoading(() {
         statusListOrder = Status.loaded;
       });
-
-
       if(listOrderStatusNot1and3.isEmpty){
         receivedNoData(() {
           statusListOrder = Status.noData;

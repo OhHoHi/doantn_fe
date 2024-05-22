@@ -290,9 +290,12 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(5.0), // Điều chỉnh bán kính để bo tròn góc
                                     ),
-                                    value: false,
+                                    value: _isChecked,
                                     activeColor: ColorApp.backgroundColor,
                                     onChanged: (bool? value) {
+                                      setState(() {
+                                        _isChecked = value ?? false;
+                                      });
                                     }),
                                 const Text(
                                   'Ghi nhớ tài khoản',
