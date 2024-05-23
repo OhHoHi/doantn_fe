@@ -15,6 +15,7 @@ class BodyRegister extends StatefulWidget {
 }
 
 class _BodyRegisterState extends State<BodyRegister> {
+  final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
@@ -29,39 +30,56 @@ class _BodyRegisterState extends State<BodyRegister> {
     registerProvider = Provider.of<RegisterProvider>(context, listen: false);
   }
 
+  bool isEmailValid(String email) {
+    final RegExp emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    return emailRegex.hasMatch(email);
+  }
+
+  void validateAndRegister(BuildContext context) {
+    if (_formKey.currentState?.validate() ?? false) {
+      final fullName = _fullNameController.text.trim();
+      final userName = _userNameController.text.trim();
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+
+      registerProvider.register(context, fullName, userName, email, password);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return SkeletonTab(
-        title: 'Đăng ký',
-        bodyWidgets:
-        Selector<RegisterProvider, Status>(builder: (context, value, child) {
+      title: 'Đăng ký',
+      bodyWidgets: Selector<RegisterProvider, Status>(
+        builder: (context, value, child) {
           if (value == Status.loading) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ProgressHUD.of(context)?.show();
             });
-            print('Bat dau load');
+            print('Bắt đầu load');
           } else if (value == Status.loaded) {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               ProgressHUD.of(context)?.dismiss();
             });
-            print("load thanh cong");
-            print('message chứa gì  ${registerProvider.message}');
-
+            print("Load thành công");
+            print('Message chứa gì  ${registerProvider.message}');
           } else if (value == Status.error) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ProgressHUD.of(context)?.dismiss();
-              print('Load error r');
-              print('message chứa gì  ${registerProvider.message}');
-
+              print('Load error');
+              print('Message chứa gì  ${registerProvider.message}');
             });
           }
           return buildData(registerProvider);
-        }, selector: (context, pro) {
+        },
+        selector: (context, pro) {
           return pro.statusRegister;
-        }),
-        isBack: true);
-
+        },
+      ),
+      isBack: true,
+    );
   }
 
   Widget buildData(RegisterProvider registerProvider) {
@@ -69,324 +87,132 @@ class _BodyRegisterState extends State<BodyRegister> {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 50),
-             Card(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(25)),
-              ),
-              color: Colors.white,
-              margin: const EdgeInsets.all(10),
-              child: TextField(
-                controller: _fullNameController,
-                maxLines: 1,
-                decoration: const InputDecoration(
+        child: Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(
+            children: [
+              const SizedBox(height: 50),
+              Card(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                ),
+                color: Colors.white,
+                margin: const EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: _fullNameController,
+                  maxLines: 1,
+                  decoration: const InputDecoration(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.all(15),
                     labelStyle: TextStyle(color: AppPalette.textColor),
                     hintText: 'Họ và tên',
-                    hintStyle: TextStyle(color: AppPalette.thinTextColor)),
+                    hintStyle: TextStyle(color: AppPalette.thinTextColor),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Họ và tên không được để trống';
+                    }
+                    return null;
+                  },
+                ),
               ),
-            ),
-             Card(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(25)),
-              ),
-              color: Colors.white,
-              margin: const EdgeInsets.all(10),
-              child: TextField(
-                controller: _emailController,
-                maxLines: 1,
-                decoration: const InputDecoration(
+              Card(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                ),
+                color: Colors.white,
+                margin: const EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: _emailController,
+                  maxLines: 1,
+                  decoration: const InputDecoration(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.all(15),
                     labelStyle: TextStyle(color: AppPalette.textColor),
                     hintText: 'Địa chỉ email',
-                    hintStyle: TextStyle(color: AppPalette.thinTextColor)),
+                    hintStyle: TextStyle(color: AppPalette.thinTextColor),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Địa chỉ email không được để trống';
+                    }
+                    if (!isEmailValid(value.trim())) {
+                      return 'Địa chỉ email không hợp lệ';
+                    }
+                    return null;
+                  },
+                ),
               ),
-            ),
-             Card(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(25)),
-              ),
-              color: Colors.white,
-              margin: const EdgeInsets.all(10),
-              child: TextField(
-                controller: _userNameController,
-                maxLines: 1,
-                decoration: const InputDecoration(
+              Card(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                ),
+                color: Colors.white,
+                margin: const EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: _userNameController,
+                  maxLines: 1,
+                  decoration: const InputDecoration(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.all(15),
                     labelStyle: TextStyle(color: AppPalette.textColor),
                     hintText: 'Tên đăng nhập',
-                    hintStyle: TextStyle(color: AppPalette.thinTextColor)),
+                    hintStyle: TextStyle(color: AppPalette.thinTextColor),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Tên đăng nhập không được để trống';
+                    }
+                    return null;
+                  },
+                ),
               ),
-            ),
-            Card(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(25)),
-              ),
-              color: Colors.white,
-              margin: const EdgeInsets.all(10),
-              child: TextField(
-                controller: _passwordController,
-                maxLines: 1,
-                decoration: const InputDecoration(
+              Card(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                ),
+                color: Colors.white,
+                margin: const EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: _passwordController,
+                  maxLines: 1,
+                  obscureText: true,
+                  decoration: const InputDecoration(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.all(15),
                     labelStyle: TextStyle(color: AppPalette.textColor),
                     hintText: 'Mật khẩu',
-                    hintStyle: TextStyle(color: AppPalette.thinTextColor)),
+                    hintStyle: TextStyle(color: AppPalette.thinTextColor),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Mật khẩu không được để trống';
+                    }
+                    return null;
+                  },
+                ),
               ),
-            ),
-            const SizedBox(height: 50),
-            ElevatedButton(
-              onPressed: () {
-                  registerProvider.register(context, _fullNameController.text,
-                      _userNameController.text , _emailController.text , _passwordController.text);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppPalette.green3Color,
-                foregroundColor: Colors.white,
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(25))),
-                minimumSize: const Size(200, 50),
+              const SizedBox(height: 50),
+              ElevatedButton(
+                onPressed: () => validateAndRegister(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppPalette.green3Color,
+                  foregroundColor: Colors.white,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                  ),
+                  minimumSize: const Size(200, 50),
+                ),
+                child: const Text(
+                  'Đăng ký',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
-              child: const Text(
-                'Đăng ký',
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
-    //   SingleChildScrollView(
-    //   reverse: true,
-    //   child: Center(
-    //     child: Padding(
-    //       padding: EdgeInsets.only(
-    //         left: size.width * 0.04,
-    //         right: size.width * 0.04,
-    //       ),
-    //       child: Container(
-    //         padding: EdgeInsets.only(top: size.height * 0.45),
-    //         child: Column(
-    //           mainAxisAlignment: MainAxisAlignment.center,
-    //           children: [
-    //             Container(
-    //               padding: EdgeInsets.only(top: 24),
-    //               child: const Text(
-    //                 'Đăng ký',
-    //                 style: TextStyle(
-    //                   color: ColorApp.textColor,
-    //                   fontSize: 20,
-    //                   fontWeight: FontWeight.w600,
-    //                 ),
-    //               ),
-    //             ),
-    //             const SizedBox(
-    //               height: 8,
-    //             ),
-    //             Container(
-    //               padding: EdgeInsets.only(left: 10),
-    //               height: 40,
-    //               decoration: BoxDecoration(
-    //                 color: ColorApp.textFieltColor,
-    //                 borderRadius: BorderRadius.circular(15),
-    //               ),
-    //               child: Row(
-    //                 children: [
-    //                   Expanded(
-    //                       flex: 1,
-    //                       child: SvgPicture.asset(AppAssets.icoUser)
-    //                   ),
-    //                   const SizedBox(
-    //                     width: 8,
-    //                   ),
-    //                   Expanded(
-    //                     flex: 8,
-    //                     child: TextFormField(
-    //                       controller: _fullNameController,
-    //                       style: const TextStyle(
-    //                           fontSize: 14,
-    //                           fontWeight: FontWeight.w400),
-    //                       decoration: const InputDecoration(
-    //                           hintText: 'full name',
-    //                           border: InputBorder.none),
-    //                     ),
-    //                   ),
-    //                 ],
-    //               ),
-    //             ),
-    //             const SizedBox(
-    //               height: 8,
-    //             ),
-    //             Container(
-    //               padding: EdgeInsets.only(left: 10),
-    //               height: 40,
-    //               decoration: BoxDecoration(
-    //                 color: ColorApp.textFieltColor,
-    //                 borderRadius: BorderRadius.circular(15),
-    //               ),
-    //               child: Row(
-    //                 children: [
-    //                   Expanded(
-    //                       flex: 1,
-    //                       child: SvgPicture.asset(AppAssets.icoUser)
-    //                   ),
-    //                   const SizedBox(
-    //                     width: 8,
-    //                   ),
-    //                   Expanded(
-    //                     flex: 8,
-    //                     child: TextFormField(
-    //                       controller: _userNameController,
-    //                       style: const TextStyle(
-    //                           fontSize: 14,
-    //                           fontWeight: FontWeight.w400),
-    //                       decoration: const InputDecoration(
-    //                           hintText: 'user name',
-    //                           border: InputBorder.none),
-    //                     ),
-    //                   ),
-    //                 ],
-    //               ),
-    //             ),
-    //             const SizedBox(
-    //               height: 8,
-    //             ),
-    //             Container(
-    //               padding: EdgeInsets.only(left: 10),
-    //               height: 54
-    //               ,
-    //               decoration: BoxDecoration(
-    //                 color: ColorApp.textFieltColor,
-    //                 borderRadius: BorderRadius.circular(15),
-    //               ),
-    //               child: Row(
-    //                 children: [
-    //                   Expanded(
-    //                       flex: 1,
-    //                       child: SvgPicture.asset(AppAssets.icoUser)
-    //                   ),
-    //                   const SizedBox(
-    //                     width: 8,
-    //                   ),
-    //                   Expanded(
-    //                     flex: 8,
-    //                     child: TextFormField(
-    //                       controller: _emailController,
-    //                       style: const TextStyle(
-    //                           fontSize: 14,
-    //                           fontWeight: FontWeight.w400),
-    //                       decoration: const InputDecoration(
-    //                           hintText: 'Nhập email',
-    //                           border: InputBorder.none),
-    //                       validator: (email){
-    //                         if(email!.isEmpty){
-    //                           return 'Vui lòng nhập email';
-    //                         }
-    //                         if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-    //                           return 'Email không hợp lệ';
-    //                         }
-    //                         return null;
-    //                       },
-    //                       autovalidateMode: AutovalidateMode.onUserInteraction,
-    //                     ),
-    //                   ),
-    //                 ],
-    //               ),
-    //             ),
-    //             const SizedBox(
-    //               height: 8,
-    //             ),
-    //             Container(
-    //               padding: EdgeInsets.only(left: 10),
-    //               height: 40,
-    //               decoration: BoxDecoration(
-    //                 color: ColorApp.textFieltColor,
-    //                 borderRadius: BorderRadius.circular(15),
-    //               ),
-    //               child: Row(
-    //                 children: [
-    //                   Expanded(
-    //                       flex: 1,
-    //                       child: SvgPicture.asset(AppAssets.icoUser)
-    //                   ),
-    //                   const SizedBox(
-    //                     width: 8,
-    //                   ),
-    //                   Expanded(
-    //                     flex: 8,
-    //                     child: TextFormField(
-    //                       controller: _passwordController,
-    //                       style: const TextStyle(
-    //                           fontSize: 14,
-    //                           fontWeight: FontWeight.w400),
-    //                       decoration: const InputDecoration(
-    //                           hintText: 'Nhập password',
-    //                           border: InputBorder.none),
-    //                     ),
-    //                   ),
-    //                 ],
-    //               ),
-    //             ),
-    //             const SizedBox(
-    //               height: 8,
-    //             ),
-    //             GestureDetector(
-    //               onTap: () {
-    //                 registerProvider.register(context, _fullNameController.text,
-    //                     _userNameController.text , _emailController.text , _passwordController.text);
-    //               },
-    //               child: Container(
-    //                 height: 40,
-    //                 margin: EdgeInsets.only(left: 19, right: 19),
-    //                 decoration: BoxDecoration(
-    //                   color: ColorApp.buttonColor,
-    //                   borderRadius: BorderRadius.circular(10),
-    //                 ),
-    //                 child: const Center(
-    //                   child: Text(
-    //                     'Đăng ký',
-    //                     style: TextStyle(color: Colors.white, fontSize: 16),
-    //                   ),
-    //                 ),
-    //               ),
-    //             ),
-    //
-    //             const SizedBox(
-    //               height: 8,
-    //             ),
-    //             GestureDetector(
-    //               onTap: () {
-    //                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-    //                     builder: (_) => const LoginScreen(
-    //                     )));
-    //               },
-    //               child: Container(
-    //                 height: 40,
-    //                 margin: EdgeInsets.only(left: 19, right: 19),
-    //                 decoration: BoxDecoration(
-    //                   color: ColorApp.buttonColor,
-    //                   borderRadius: BorderRadius.circular(10),
-    //                 ),
-    //                 child: const Center(
-    //                   child: Text(
-    //                     'Quay lại đăng nhập',
-    //                     style: TextStyle(color: Colors.white, fontSize: 16),
-    //                   ),
-    //                 ),
-    //               ),
-    //             ),
-    //           ],
-    //
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 }

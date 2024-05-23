@@ -1,3 +1,4 @@
+import 'package:doan_tn/home/controller/brand_controller.dart';
 import 'package:doan_tn/home/home_admin/view/admin_page.dart';
 import 'package:doan_tn/home/model/product_reponse.dart';
 import 'package:image_picker/image_picker.dart';
@@ -24,6 +25,8 @@ class BodyAddProduct extends StatefulWidget {
 class _BodyHomeViewState extends State<BodyAddProduct> {
   late ProductProvider productProvider;
 
+  late BrandProvider brandProvider;
+
   //FocusNode _nameFocusNode = FocusNode();
 
   @override
@@ -32,16 +35,14 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
     super.initState();
     //  _nameFocusNode.requestFocus();
     productProvider = Provider.of<ProductProvider>(context, listen: false);
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   productProvider.getListProduct();
-    // });
+    brandProvider = Provider.of<BrandProvider>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      brandProvider.getListBrand();
+    });
     if (widget.productResponse != null) {
       _nameController.text = widget.productResponse!.name;
       _descriptionController.text = widget.productResponse!.description;
       _priceController.text = widget.productResponse!.price.toString();
-
-      // _brandsNameController.text = widget.productResponse!.brands.name;
-      // Kiểm tra xem brands có null hay không trước khi truy cập trường name
       if (widget.productResponse!.brands != null) {
         _brandsNameController.text = widget.productResponse!.brands!.name;
       }
@@ -73,12 +74,26 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
     }
   }
 
-  // @override
-  // void dispose() {
-  //   _nameFocusNode.dispose();
-  //   super.dispose();
-  // }
-
+  @override
+  void dispose() {
+    _brandsNameController.dispose();
+    _nameController.dispose();
+    _descriptionController.dispose();
+    _priceController.dispose();
+    _statusController.dispose();
+    _colorController.dispose();
+    _chatLieuKhungVotController.dispose();
+    _chatLieuThanVotController.dispose();
+    _trongLuongController.dispose();
+    _doCungController.dispose();
+    _diemCanBangController.dispose();
+    _chieuDaiVotController.dispose();
+    _mucCangToiDaController.dispose();
+    _chuViCanCamController.dispose();
+    _trinhDoChoiController.dispose();
+    _noiDungChoiController.dispose();
+    super.dispose();
+  }
   TextEditingController _nameController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
@@ -96,6 +111,22 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
   TextEditingController _trinhDoChoiController = TextEditingController();
   TextEditingController _noiDungChoiController = TextEditingController();
 
+  bool _isNameEmpty = false;
+  bool _isDescriptionEmpty = false;
+  bool _isPriceEmpty = false;
+  bool _isBrandsNameEmpty = false;
+  bool _isStatusEmpty = false;
+  bool _isColorEmpty = false;
+  bool _isChatLieuKhungVotEmpty = false;
+  bool _isChatLieuThanVotEmpty = false;
+  bool _isTrongLuongEmpty = false;
+  bool _isDoCungEmpty = false;
+  bool _isDiemCanBangEmpty = false;
+  bool _isChieuDaiVotEmpty = false;
+  bool _isMucCangToiDaEmpty = false;
+  bool _isChuViCanCamEmpty = false;
+  bool _isTrinhDoChoiEmpty = false;
+  bool _isNoiDungChoiEmpty = false;
   List<File> _images = [];
   final picker = ImagePicker();
 
@@ -129,7 +160,31 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
       );
       return;
     }
+    setState(() {
+      _isNameEmpty = _nameController.text.isEmpty;
+      _isDescriptionEmpty = _descriptionController.text.isEmpty;
+      _isPriceEmpty = _priceController.text.isEmpty;
+      _isBrandsNameEmpty = _brandsNameController.text.isEmpty;
+      _isStatusEmpty = _statusController.text.isEmpty;
+      _isColorEmpty = _colorController.text.isEmpty;
+      _isChatLieuKhungVotEmpty = _chatLieuKhungVotController.text.isEmpty;
+      _isChatLieuThanVotEmpty = _chatLieuThanVotController.text.isEmpty;
+      _isTrongLuongEmpty = _trongLuongController.text.isEmpty;
+      _isDoCungEmpty = _doCungController.text.isEmpty;
+      _isDiemCanBangEmpty = _diemCanBangController.text.isEmpty;
+      _isChieuDaiVotEmpty = _chieuDaiVotController.text.isEmpty;
+      _isMucCangToiDaEmpty = _mucCangToiDaController.text.isEmpty;
+      _isChuViCanCamEmpty = _chuViCanCamController.text.isEmpty;
+      _isTrinhDoChoiEmpty = _trinhDoChoiController.text.isEmpty;
+      _isNoiDungChoiEmpty = _noiDungChoiController.text.isEmpty;
+    });
 
+    if (_isNameEmpty || _isDescriptionEmpty || _isPriceEmpty || _isBrandsNameEmpty || _isStatusEmpty || _isColorEmpty || _isChatLieuKhungVotEmpty || _isChatLieuThanVotEmpty || _isTrongLuongEmpty || _isDoCungEmpty || _isDiemCanBangEmpty || _isChieuDaiVotEmpty || _isMucCangToiDaEmpty || _isChuViCanCamEmpty || _isTrinhDoChoiEmpty || _isNoiDungChoiEmpty || _images.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin')),
+      );
+      return;
+    }
     try {
       await productProvider.addProduct(
         _nameController.text,
@@ -210,6 +265,31 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
   }
 
   Future<void> _editProduct(int id) async {
+    setState(() {
+      _isNameEmpty = _nameController.text.isEmpty;
+      _isDescriptionEmpty = _descriptionController.text.isEmpty;
+      _isPriceEmpty = _priceController.text.isEmpty;
+      _isBrandsNameEmpty = _brandsNameController.text.isEmpty;
+      _isStatusEmpty = _statusController.text.isEmpty;
+      _isColorEmpty = _colorController.text.isEmpty;
+      _isChatLieuKhungVotEmpty = _chatLieuKhungVotController.text.isEmpty;
+      _isChatLieuThanVotEmpty = _chatLieuThanVotController.text.isEmpty;
+      _isTrongLuongEmpty = _trongLuongController.text.isEmpty;
+      _isDoCungEmpty = _doCungController.text.isEmpty;
+      _isDiemCanBangEmpty = _diemCanBangController.text.isEmpty;
+      _isChieuDaiVotEmpty = _chieuDaiVotController.text.isEmpty;
+      _isMucCangToiDaEmpty = _mucCangToiDaController.text.isEmpty;
+      _isChuViCanCamEmpty = _chuViCanCamController.text.isEmpty;
+      _isTrinhDoChoiEmpty = _trinhDoChoiController.text.isEmpty;
+      _isNoiDungChoiEmpty = _noiDungChoiController.text.isEmpty;
+    });
+
+    if (_isNameEmpty || _isDescriptionEmpty || _isPriceEmpty || _isBrandsNameEmpty || _isStatusEmpty || _isColorEmpty || _isChatLieuKhungVotEmpty || _isChatLieuThanVotEmpty || _isTrongLuongEmpty || _isDoCungEmpty || _isDiemCanBangEmpty || _isChieuDaiVotEmpty || _isMucCangToiDaEmpty || _isChuViCanCamEmpty || _isTrinhDoChoiEmpty || _isNoiDungChoiEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin')),
+      );
+      return;
+    }
     try {
       await productProvider.editProduct(
           _nameController.text,
@@ -414,9 +494,10 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
                             scrollDirection: Axis.horizontal,
                             itemCount: _images.length,
                             itemBuilder: (context, index) {
+                              final reversedIndex = _images.length - 1 - index; // Lấy chỉ số ngược lại
                               return Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Image.file(_images[index],
+                                child: Image.file(_images[reversedIndex],
                                     width: 100, height: 100),
                               );
                             },
@@ -434,7 +515,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
                           borderRadius: BorderRadius.all(Radius.circular(25))),
                       minimumSize: const Size(200, 50),
                     ),
-                    child: Text('Select Image'),
+                    child: const Text('Select Image'),
                   )
                 : const SizedBox(),
             Card(
@@ -455,23 +536,82 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
                     hintStyle: TextStyle(color: AppPalette.thinTextColor)),
               ),
             ),
-            Card(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(25)),
-              ),
-              color: Colors.white,
-              margin: const EdgeInsets.all(10),
-              child: TextField(
-                maxLines: 1,
-                controller: _brandsNameController,
-                decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(15),
-                    labelStyle: TextStyle(color: AppPalette.textColor),
-                    hintText: 'Hãng sản xuất',
-                    hintStyle: TextStyle(color: AppPalette.thinTextColor)),
-              ),
+            Selector<BrandProvider, Status>(
+              builder: (context, value, child) {
+                if (value == Status.loading) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ProgressHUD.of(context)?.show();
+                  });
+                  print('Bắt đầu load');
+                } else if (value == Status.loaded) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) async {
+                    ProgressHUD.of(context)?.dismiss();
+                  });
+                  print("Load thành công");
+                } else if (value == Status.error) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ProgressHUD.of(context)?.dismiss();
+                    print('Load error');
+                  });
+                }
+                return Card(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                  ),
+                  color: Colors.white,
+                  margin: const EdgeInsets.all(10),
+                  child: Autocomplete<String>(
+                      initialValue: TextEditingValue(text: _brandsNameController.text),
+                      optionsBuilder: (TextEditingValue textEditingValue){
+                      if (textEditingValue.text.isEmpty) {
+                        return const Iterable<String>.empty();
+                      }
+                      return brandProvider.listBrand.map((brand) => brand.name).where((String option) {
+                        return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+                      });
+                    },
+                    onSelected: (String selection) {
+                      _brandsNameController.text = selection;
+                    },
+                    fieldViewBuilder:(BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted){
+                      fieldTextEditingController.text = _brandsNameController.text;
+                      //_brandsNameController.text = fieldTextEditingController.text;
+                      return TextField(
+                        maxLines: 1,
+                        controller: fieldTextEditingController,
+                        focusNode: fieldFocusNode,
+                        decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.all(15),
+                            labelStyle: TextStyle(color: AppPalette.textColor),
+                            hintText: 'Hãng sản xuất',
+                            hintStyle: TextStyle(color: AppPalette.thinTextColor)),
+                      );
+                    }
+                  ),
+                );
+              },
+              selector: (context, pro) {
+                return pro.statusListBrand;
+              },
             ),
+            // Card(
+            //   shape: const RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.all(Radius.circular(25)),
+            //   ),
+            //   color: Colors.white,
+            //   margin: const EdgeInsets.all(10),
+            //     child: TextField(
+            //       maxLines: 1,
+            //       controller: _brandsNameController,
+            //       decoration: const InputDecoration(
+            //           border: InputBorder.none,
+            //           contentPadding: EdgeInsets.all(15),
+            //           labelStyle: TextStyle(color: AppPalette.textColor),
+            //           hintText: 'Hãng sản xuất',
+            //           hintStyle: TextStyle(color: AppPalette.thinTextColor)),
+            //     ),
+            // ),
             Card(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(25)),
@@ -582,6 +722,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
               margin: const EdgeInsets.all(10),
               child: TextField(
                 maxLines: 1,
+                keyboardType: TextInputType.number,
                 controller: _diemCanBangController,
                 decoration: const InputDecoration(
                     border: InputBorder.none,

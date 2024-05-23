@@ -107,9 +107,7 @@ class _OrderStatus0State extends State<BodyOrderStatus0> {
           shrinkWrap: true,
           itemCount: paymentProvider.listOrderStatus0.length,
           itemBuilder: (context, index) {
-            final reversedIndex = paymentProvider.listOrderStatus0.length - 1 - index; // Lấy chỉ số ngược lại
-
-            return buildData(paymentProvider,paymentProvider.listOrderStatus0[reversedIndex]);
+            return buildData(paymentProvider,paymentProvider.listOrderStatus0[index]);
           },
         );
       }, selector: (context, pro) {
