@@ -11,6 +11,7 @@ import '../../controller/pay_controller.dart';
 import '../../model/pay_response.dart';
 import '../../servicer/pay_service.dart';
 import 'order_pay_detail.dart';
+import 'package:refresh_loadmore/refresh_loadmore.dart';
 
 class OrderStatus1end3 extends StatelessWidget {
   OrderStatus1end3({Key? key, required this.isAdmin , required this.initialTabIndex})
@@ -52,12 +53,14 @@ class _OrderStatus1end3State extends State<BodyOrderStatus1end3> {
     paymentProvider = Provider.of<PaymentProvider>(context, listen: false);
     if(widget.isAdmin == true){
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        paymentProvider.resetPage();
         paymentProvider.getListOrderAllStatus1end3();
         print("lay id duoc khong ${user.user.id}");
       });
     }
     else{
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        paymentProvider.resetPage();
         paymentProvider.getListOrderStatus1end3WithUser(user.user.id);
         print("lay id duoc khong ${user.user.id}");
       });
@@ -72,9 +75,26 @@ class _OrderStatus1end3State extends State<BodyOrderStatus1end3> {
     return formatter.format(price);
   }
 
+  Future<void> _refreshIsAdmin() async{
+    paymentProvider.refresh = true;
+    paymentProvider.resetPage();
+    paymentProvider.getListOrderAllStatus1end3();
+  }
+  Future<void> _scrollListenerIsAdmin() async {
+    paymentProvider.loadMoreOrderAllStatus1end3();
+  }
+  Future<void> _refreshIsUser() async{
+    paymentProvider.refresh = true;
+    paymentProvider.resetPage();
+    paymentProvider.getListOrderStatus1end3WithUser(user.user.id);
+  }
+  Future<void> _scrollListenerIsUser() async {
+    paymentProvider.loadMoreOrderAllStatusNot1end3WithUser(user.user.id);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return       Selector<PaymentProvider, Status>(builder: (context, value, child) {
+    return Selector<PaymentProvider, Status>(builder: (context, value, child) {
       if (value == Status.loading) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ProgressHUD.of(context)?.show();
@@ -96,44 +116,31 @@ class _OrderStatus1end3State extends State<BodyOrderStatus1end3> {
         });
         return const Center(child: Text("Bạn không có đơn hàng nào"));
       }
-      return ListView.builder(
-        physics: const AlwaysScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: paymentProvider.listOrderStatus1and3.length,
-        itemBuilder: (context, index) {
-          final reversedIndex = paymentProvider.listOrderStatus1and3.length - 1 - index; // Lấy chỉ số ngược lại
+      return
+        // RefreshLoadmore(
+        // onRefresh: widget.isAdmin == true ? _refreshIsAdmin : _refreshIsUser ,
+        // onLoadmore: widget.isAdmin == true ? _scrollListenerIsAdmin : _scrollListenerIsUser ,
+        // isLastPage:!paymentProvider.canLoadMore,
+        // child:
+        SingleChildScrollView(
+          child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: paymentProvider.listOrderStatus1and3.length,
+          itemBuilder: (context, index) {
+            final reversedIndex = paymentProvider.listOrderStatus1and3.length - 1 - index; // Lấy chỉ số ngược lại
 
-          return buildData(paymentProvider,paymentProvider.listOrderStatus1and3[reversedIndex]);
-        },
-      );
+            return buildData(paymentProvider,paymentProvider.listOrderStatus1and3[index]);
+          },
+      ),
+        );
+       // );
     }, selector: (context, pro) {
       return pro.statusListOrder;
     });
   }
   Widget buildData(PaymentProvider paymentProvider, PayResponse payResponse) {
 
-    if (payResponse.status == 0) {
-      // Trả về widget trống nếu status khác 0
-      return const SizedBox.shrink();
-    }
-    return Selector<PaymentProvider, Status>(
-        builder: (context, value, child) {
-          if (value == Status.loading) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ProgressHUD.of(context)?.show();
-            });
-            print('Bat dau load');
-          } else if (value == Status.loaded) {
-            WidgetsBinding.instance.addPostFrameCallback((_) async {
-              ProgressHUD.of(context)?.dismiss();
-            });
-            print("load thanh cong");
-          } else if (value == Status.error) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ProgressHUD.of(context)?.dismiss();
-              print('Load error r');
-            });
-          }
           final orderItems = paymentProvider.orderItemsMap[payResponse.id] ?? [];
           if (orderItems.isEmpty) {
             return Text("Không có mục đơn hàng nào");
@@ -207,9 +214,5 @@ class _OrderStatus1end3State extends State<BodyOrderStatus1end3> {
               const SizedBox(height: 10,),
             ],
           );
-        }, selector: (context, pro) {
-      return pro.statusListProduct;
-    });
   }
-
 }

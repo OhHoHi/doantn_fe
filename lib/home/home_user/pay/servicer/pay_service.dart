@@ -179,8 +179,8 @@ class PayService extends BaseService {
     }
   }
 
-  Future<List<PayResponse>> getOrdersWithStatusOutsideOneToThree() async {
-    Response response = await client.get('http://10.0.2.2:8080/api/orders/status/outside-1-to-3') ;
+  Future<List<PayResponse>> getOrdersWithStatusOutsideOneToThree(int page , int size) async {
+    Response response = await client.get('http://10.0.2.2:8080/api/orders/status/outside-1-to-3?page=$page&size=$size') ;
     if (response.statusCode == 200) {
       if(response.data != null){
         List<dynamic> responseData = response.data;
@@ -196,8 +196,8 @@ class PayService extends BaseService {
       throw Exception('Failed to load product data');
     }
   }
-  Future<List<PayResponse>> getOrdersWithStatusOutsideOneToThreeWith(int userId) async {
-    Response response = await client.get('http://10.0.2.2:8080/api/orders/user/$userId/status/outside-1-to-3') ;
+  Future<List<PayResponse>> getOrdersWithStatusOutsideOneToThreeWith(int userId , int page , int size) async {
+    Response response = await client.get('http://10.0.2.2:8080/api/orders/user/$userId/status/outside-1-to-3?page=$page&size=$size') ;
     if (response.statusCode == 200) {
       if(response.data != null){
         List<dynamic> responseData = response.data;
@@ -244,15 +244,17 @@ class PayService extends BaseService {
     }
   }
 
-  Future<bool> deleteNotify(int notifyId ,int userId) async {
-    try{
-      await client.delete(
-        "http://10.0.2.2:8080/api/notifications/$notifyId/user/$userId",
-      );
-      return true;
-    }catch (e) {
-      // Xử lý ngoại lệ ở đây, nếu cần
-      return false;
-    }
-  }
-}
+
+
+//   Future<bool> deleteNotify(int notifyId ,int userId) async {
+//     try{
+//       await client.delete(
+//         "http://10.0.2.2:8080/api/notifications/$notifyId/user/$userId",
+//       );
+//       return true;
+//     }catch (e) {
+//       // Xử lý ngoại lệ ở đây, nếu cần
+//       return false;
+//     }
+//   }
+ }

@@ -27,6 +27,7 @@ class PaymentProvider extends BaseProvider<PayService> {
   late List<PayResponse> listOrderStatus1and3 = [];
   late List<PayResponse> listOrderStatusNot1and3 = [];
 
+  late List<PayResponse> listOrderDisplay = [];
 
 
 
@@ -42,6 +43,53 @@ class PaymentProvider extends BaseProvider<PayService> {
   bool? checkAddOrder;
   bool? checkIncreaseStatus;
 
+  late int page = 0;
+  late String sort = "id_desc";
+  late bool canLoadMore;
+  bool refresh = false;
+
+  void resetPage() {
+    page = 0;
+    canLoadMore = true;
+    listOrderDisplay = [];
+  }
+
+  void loadMoreOrderAllStatus0() {
+    if (canLoadMore) {
+      page += 1;
+      getListOrderAllStatus0();
+    }
+  }
+  void loadMoreOrderStatus0WithUser(int userId) {
+    if (canLoadMore) {
+      page += 1;
+      getListOrderStatus0WithUser(userId);
+    }
+  }
+  void loadMoreOrderAllStatus1end3() {
+    if (canLoadMore) {
+      page += 1;
+      getListOrderAllStatus1end3();
+    }
+  }
+  void loadMoreOrderStatus1end3WithUser(int userId) {
+    if (canLoadMore) {
+      page += 1;
+      getListOrderStatus1end3WithUser(userId);
+    }
+  }
+  void loadMoreOrderAllStatusNot1end3() {
+    if (canLoadMore) {
+      page += 1;
+      getListOrderAllStatusNot1end3();
+    }
+  }
+  void loadMoreOrderAllStatusNot1end3WithUser( int userId) {
+    if (canLoadMore) {
+      page += 1;
+      getListOrderAllStatusNot1end3WithUser(userId);
+    }
+  }
   Future<void> addOrder(
       int userId,
       int status,
@@ -61,9 +109,7 @@ class PaymentProvider extends BaseProvider<PayService> {
           quantity: cartItem.quantity,
         );
       }).toList();
-
       checkAddOrder = await service.addOrder(PayRequest(userId: userId, status: status, totalAmount: totalAmount, addressId: addressId, orderItems: orderItems));
-
       if(checkAddOrder == true){
         finishLoading(() {
           statusAddPay = Status.loaded;
@@ -81,6 +127,7 @@ class PaymentProvider extends BaseProvider<PayService> {
       });
     }
   }
+
   Future<void> getListOrderAllStatus0() async {
     resetStatus();
     try {
@@ -99,7 +146,6 @@ class PaymentProvider extends BaseProvider<PayService> {
       finishLoading(() {
         statusListOrder = Status.loaded;
       });
-
 
       if(listOrderStatus0.isEmpty){
         receivedNoData(() {
@@ -137,8 +183,6 @@ class PaymentProvider extends BaseProvider<PayService> {
       finishLoading(() {
         statusListOrder = Status.loaded;
       });
-
-
       if(listOrderStatus0.isEmpty){
         receivedNoData(() {
           statusListOrder = Status.noData;
@@ -176,8 +220,6 @@ class PaymentProvider extends BaseProvider<PayService> {
       finishLoading(() {
         statusListOrder = Status.loaded;
       });
-
-
       if(listOrderStatus1and3.isEmpty){
         receivedNoData(() {
           statusListOrder = Status.noData;
@@ -188,7 +230,6 @@ class PaymentProvider extends BaseProvider<PayService> {
           statusListOrder = Status.loaded;
         });
       }
-
     } on DioException catch (e) {
       messagesError = e.message ?? 'Co loi he thong';
       receivedError(() {
@@ -214,8 +255,6 @@ class PaymentProvider extends BaseProvider<PayService> {
       finishLoading(() {
         statusListOrder = Status.loaded;
       });
-
-
       if(listOrderStatus1and3.isEmpty){
         receivedNoData(() {
           statusListOrder = Status.noData;
@@ -240,7 +279,7 @@ class PaymentProvider extends BaseProvider<PayService> {
       startLoading(() {
         statusListOrder = Status.loading;
       });
-      listOrderStatusNot1and3 = await service.getOrdersWithStatusOutsideOneToThree();
+      listOrderStatusNot1and3 = await service.getOrdersWithStatusOutsideOneToThree(page , 10);
       if (listOrderStatusNot1and3.isNotEmpty) {
         for (var order in listOrderStatusNot1and3) {
           await getListOrderItem(order.id);
@@ -249,11 +288,18 @@ class PaymentProvider extends BaseProvider<PayService> {
       } else {
         statusListOrder = Status.noData;
       }
+      if (refresh == true) {
+        listOrderDisplay = listOrderStatusNot1and3;
+        refresh=false;
+      } else {
+        listOrderDisplay += listOrderStatusNot1and3;
+      }
+      if (listOrderStatusNot1and3.length <10) {
+        canLoadMore = false;
+      }
       finishLoading(() {
         statusListOrder = Status.loaded;
       });
-
-
       if(listOrderStatusNot1and3.isEmpty){
         receivedNoData(() {
           statusListOrder = Status.noData;
@@ -278,7 +324,7 @@ class PaymentProvider extends BaseProvider<PayService> {
       startLoading(() {
         statusListOrder = Status.loading;
       });
-      listOrderStatusNot1and3 = await service.getOrdersWithStatusOutsideOneToThreeWith(userId);
+      listOrderStatusNot1and3 = await service.getOrdersWithStatusOutsideOneToThreeWith(userId , page , 10);
       if (listOrderStatusNot1and3.isNotEmpty) {
         for (var order in listOrderStatusNot1and3) {
           await getListOrderItem(order.id);
@@ -286,6 +332,15 @@ class PaymentProvider extends BaseProvider<PayService> {
         statusListOrder = Status.loaded;
       } else {
         statusListOrder = Status.noData;
+      }
+      if (refresh == true) {
+        listOrderDisplay = listOrderStatusNot1and3;
+        refresh=false;
+      } else {
+        listOrderDisplay += listOrderStatusNot1and3;
+      }
+      if (listOrderStatusNot1and3.length <10) {
+        canLoadMore = false;
       }
       finishLoading(() {
         statusListOrder = Status.loaded;
@@ -486,7 +541,7 @@ class PaymentProvider extends BaseProvider<PayService> {
         finishLoading(() {
           statusListOrder = Status.loaded;
         });
-        getListOrderAll();
+      //  getListOrderAll();
       }
       else{
         receivedError(() {

@@ -11,7 +11,10 @@ import '../../../../../values/styles.dart';
 import '../../controller/pay_controller.dart';
 import '../../model/pay_response.dart';
 import '../../servicer/pay_service.dart';
+import '../order_pay_screen.dart';
 import 'order_pay_detail.dart';
+import 'package:refresh_loadmore/refresh_loadmore.dart';
+
 class OrderStatus0 extends StatelessWidget {
   OrderStatus0({Key? key, required this.isAdmin , required this.initialTabIndex})
       : super(key: key);
@@ -54,17 +57,20 @@ class _OrderStatus0State extends State<BodyOrderStatus0> {
     paymentProvider = Provider.of<PaymentProvider>(context, listen: false);
     if(widget.isAdmin == true){
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        // paymentProvider.resetPage();
         paymentProvider.getListOrderAllStatus0();
-        print("lay id duoc khong ${user.user.id}");
       });
     }
     else{
       WidgetsBinding.instance.addPostFrameCallback((_) {
+      //  paymentProvider.resetPage();
         paymentProvider.getListOrderStatus0WithUser(user.user.id);
         print("lay id duoc khong ${user.user.id}");
       });
     }
   }
+
+
   String formatDateTime(DateTime dateTime) {
     String format = 'dd/MM/yyyy HH:mm:ss';
     return DateFormat(format).format(dateTime);
@@ -74,9 +80,7 @@ class _OrderStatus0State extends State<BodyOrderStatus0> {
     return formatter.format(price);
   }
 
-  Future<void> _refresh() async{
-    paymentProvider.getListOrderAllStatus0();
-  }
+
   @override
   Widget build(BuildContext context) {
     return
@@ -102,44 +106,28 @@ class _OrderStatus0State extends State<BodyOrderStatus0> {
           });
           return const Center(child: Text("Không có mục đơn hàng nào"));
         }
-        return ListView.builder(
-          physics: const AlwaysScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: paymentProvider.listOrderStatus0.length,
-          itemBuilder: (context, index) {
-            return buildData(paymentProvider,paymentProvider.listOrderStatus0[index]);
-          },
+        return
+          // RefreshLoadmore(
+          // onRefresh: widget.isAdmin == true ? _refreshIsAdmin : _refreshIsUser ,
+          // onLoadmore: widget.isAdmin == true ? _scrollListenerIsAdmin : _scrollListenerIsUser ,
+          // isLastPage: false , //  !paymentProvider.canLoadMore,
+          //child:
+        SingleChildScrollView(
+            child: ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: paymentProvider.listOrderStatus0.length,
+              itemBuilder: (context, index) {
+                return buildData(paymentProvider,paymentProvider.listOrderStatus0[index]);
+              },
+            ),
+        //  ),
         );
       }, selector: (context, pro) {
         return pro.statusListOrder;
       });
   }
   Widget buildData(PaymentProvider paymentProvider, PayResponse payResponse) {
-    return Selector<PaymentProvider, Status>(
-        builder: (context, value, child) {
-          if (value == Status.loading) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ProgressHUD.of(context)?.show();
-            });
-            print('Bat dau load');
-          } else if (value == Status.loaded) {
-            WidgetsBinding.instance.addPostFrameCallback((_) async {
-              ProgressHUD.of(context)?.dismiss();
-            });
-            print("load thanh cong");
-          } else if (value == Status.error) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ProgressHUD.of(context)?.dismiss();
-              print('Load error r');
-            });
-          }
-          else if (value == Status.noData) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ProgressHUD.of(context)?.dismiss();
-              print('Load error r');
-            });
-            return Center(child: Text("Không có mục đơn hàng nào"));
-          }
           final orderItems = paymentProvider.orderItemsMap[payResponse.id] ?? [];
           if (orderItems.isEmpty) {
             return const SizedBox();
@@ -159,7 +147,6 @@ class _OrderStatus0State extends State<BodyOrderStatus0> {
                   if(resul == true) {
                     widget.isAdmin == true ?
                     paymentProvider.getListOrderAllStatus0() :paymentProvider.getListOrderStatus0WithUser(user.user.id);
-
                   }
                 },
                 child: Container(
@@ -202,20 +189,19 @@ class _OrderStatus0State extends State<BodyOrderStatus0> {
                                 children: [
                                   Text("Chờ xác nhận", style: AppStyles.nuntio1_14_red),
                                   const Spacer(),
-                                  if (widget.isAdmin == true)
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        paymentProvider.increaseStatus(payResponse.id);
-                                        _refresh();
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppPalette.green3Color,
-                                        foregroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                        minimumSize: Size(40, 30),
-                                      ),
-                                      child: const Text('xác nhận'),
-                                    ),
+                                  // if (widget.isAdmin == true)
+                                  //   ElevatedButton(
+                                  //     onPressed: () {
+                                  //       paymentProvider.increaseStatus(payResponse.id);
+                                  //     },
+                                  //     style: ElevatedButton.styleFrom(
+                                  //       backgroundColor: AppPalette.green3Color,
+                                  //       foregroundColor: Colors.white,
+                                  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                  //       minimumSize: Size(40, 30),
+                                  //     ),
+                                  //     child: const Text('xác nhận'),
+                                  //   ),
                                 ],
                               ),
                             ),
@@ -227,11 +213,9 @@ class _OrderStatus0State extends State<BodyOrderStatus0> {
                 ),
               ),
               const SizedBox(height: 10,),
+
             ],
           );
-        }, selector: (context, pro) {
-      return pro.statusListProduct;
-    });
   }
 
 }

@@ -24,7 +24,6 @@ class _BodyHomeViewState extends State<BodyAdminProductTab> {
     // TODO: implement initState
     super.initState();
     productProvider = Provider.of<ProductProvider>(context, listen: false);
-    String sort = "name";
     WidgetsBinding.instance.addPostFrameCallback((_) {
       productProvider.resetPage();
       productProvider.getListProduct();
