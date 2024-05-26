@@ -203,7 +203,7 @@ class _OrderStatusNot1end3State extends State<BodyOrderStatusNot1end3> {
                               width: 265,
                               child: Row(
                                 children: [
-                                  Text("Đã xác nhận", style: AppStyles.nuntio1_14_green),
+                                  Text("Đã giao", style: AppStyles.nuntio_14_blue),
                                   const Spacer(),
                                   Text('Theo dõi đơn hàng' ,style: AppStyles.nuntio_14_blue ),
                                 ],

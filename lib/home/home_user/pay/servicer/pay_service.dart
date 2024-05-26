@@ -178,7 +178,40 @@ class PayService extends BaseService {
       throw Exception('Failed to load product data');
     }
   }
-
+  Future<List<PayResponse>> getOrdersWithStatusLess0() async {
+    Response response = await client.get('http://10.0.2.2:8080/api/orders/status/less-than-zero') ;
+    if (response.statusCode == 200) {
+      if(response.data != null){
+        List<dynamic> responseData = response.data;
+        List<PayResponse> orderList = responseData.map((json) {
+          return PayResponse.fromJson(json);
+        }).toList();
+        return orderList;
+      }
+      else{
+        return [];
+      }
+    } else {
+      throw Exception('Failed to load product data');
+    }
+  }
+  Future<List<PayResponse>> getOrdersWithStatusLess0WithUser(int userId) async {
+    Response response = await client.get('http://10.0.2.2:8080/api/orders/user/$userId/status/less-than-zero') ;
+    if (response.statusCode == 200) {
+      if(response.data != null){
+        List<dynamic> responseData = response.data;
+        List<PayResponse> orderList = responseData.map((json) {
+          return PayResponse.fromJson(json);
+        }).toList();
+        return orderList;
+      }
+      else{
+        return [];
+      }
+    } else {
+      throw Exception('Failed to load product data');
+    }
+  }
   Future<List<PayResponse>> getOrdersWithStatusOutsideOneToThree(int page , int size) async {
     Response response = await client.get('http://10.0.2.2:8080/api/orders/status/outside-1-to-3?page=$page&size=$size') ;
     if (response.statusCode == 200) {
@@ -217,6 +250,17 @@ class PayService extends BaseService {
     try{
       await client.put(
         "http://10.0.2.2:8080/api/orders/increaseStatus/$orderId",
+      );
+      return true;
+    }catch (e) {
+      // Xử lý ngoại lệ ở đây, nếu cần
+      return false;
+    }
+  }
+  Future<bool> decreaseStatus(int orderId) async {
+    try{
+      await client.put(
+        "http://10.0.2.2:8080/api/orders/decreaseStatus/$orderId",
       );
       return true;
     }catch (e) {

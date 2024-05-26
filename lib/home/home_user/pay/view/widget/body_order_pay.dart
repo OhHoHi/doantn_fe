@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'order_status_0.dart';
 import 'order_status_1and3.dart';
+import 'order_status_less0.dart';
 
 class BodyOrderPay extends StatefulWidget {
   BodyOrderPay({Key? key , required this.isAdmin , required this.initialTabIndex}) : super(key: key);
@@ -24,7 +25,7 @@ class _BodyOrderPayState extends State<BodyOrderPay> with SingleTickerProviderSt
     // TODO: implement initState
     super.initState();
     _tabController = TabController(
-        length: 3, vsync: this, initialIndex: widget.initialTabIndex);
+        length: 4, vsync: this, initialIndex: widget.initialTabIndex);
   }
 
   String formatDateTime(DateTime dateTime) {
@@ -59,6 +60,7 @@ class _BodyOrderPayState extends State<BodyOrderPay> with SingleTickerProviderSt
             const Tab(text: "Đã xác nhận",),
             widget.isAdmin == true ?
             const Tab(text: 'Đã bán') : const Tab(text: "Đã giao",),
+            const Tab(text: "Đã hủy",),
           ],
         ),
         SizedBox(
@@ -69,6 +71,7 @@ class _BodyOrderPayState extends State<BodyOrderPay> with SingleTickerProviderSt
               OrderStatus0(isAdmin: widget.isAdmin, initialTabIndex: 0),
               OrderStatus1end3(isAdmin: widget.isAdmin, initialTabIndex: 1),
               OrderStatusNot1end3(isAdmin: widget.isAdmin, initialTabIndex: 2),
+              OrderStatusLess0(isAdmin: widget.isAdmin, initialTabIndex: 3,)
             ],
           ),
         ),

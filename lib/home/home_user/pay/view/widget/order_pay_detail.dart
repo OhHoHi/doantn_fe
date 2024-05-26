@@ -5,12 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../../../base/controler/base_provider.dart';
 import '../../../../../base/services/dio_option.dart';
+import '../../../../../base/widget/dialog_base.dart';
 import '../../../../../values/apppalette.dart';
+import '../../../../../values/assets.dart';
 import '../../model/pay_response.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 
 import '../../servicer/pay_service.dart';
+import '../order_pay_screen.dart';
 
 class OrderPayDetailScreen extends StatelessWidget {
   const OrderPayDetailScreen({Key? key, required this.payResponse , required this.isAdmin})
@@ -66,6 +69,60 @@ class _OrderPayDetailState extends State<OrderPayDetail> {
   String formatPrice1(int price) {
     final formatter = NumberFormat('#,###');
     return formatter.format(price);
+  }
+
+  Future<void> _deleteCart(int id) async {
+    try {
+      await paymentProvider.decreaseStatus(id);
+      if (paymentProvider.checkDecreaseStatus == true) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return DialogBase(
+                title: 'Thông báo',
+                content: 'Bạn đã hủy đơn hàng thành công',
+                icon: AppAssets.icoDefault,
+                button: true,
+                // function:(){
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => OrderPayScreen(isAdmin: false , initialTabIndex: 0,),
+                //     ),
+                //   );
+                // } ,
+              );
+            });
+      } else {
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('Failed to add product')),
+        // );
+        showDialog(
+            context: context,
+            builder: (context) {
+              return DialogBase(
+                title: 'Thông báo',
+                content: 'Có lỗi gì đó sảy ra',
+                icon: AppAssets.icoDefault,
+                button: true,
+              );
+            });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add product')),
+      );
+      // showDialog(
+      //     context: context,
+      //     builder: (context) {
+      //       return DialogBase(
+      //         title: 'Thông báo',
+      //         content: 'Thêm sản phẩm thất bại',
+      //         icon: AppAssets.icoDefault,
+      //         button: true,
+      //       );
+      //     });
+    }
   }
 
   late PaymentProvider paymentProvider;
@@ -318,7 +375,7 @@ class _OrderPayDetailState extends State<OrderPayDetail> {
               child: Stepper(
                 currentStep: currentStep,
                 controlsBuilder: (context, detail) {
-                  if(widget.isAdmin == true  && currentStep < 3){
+                  if(widget.isAdmin == true  && currentStep < 4){
                     return ElevatedButton(
                       onPressed: () => changeOrderStatus( detail.currentStep, widget.payResponse.id),
                       style: ElevatedButton.styleFrom(
@@ -335,7 +392,7 @@ class _OrderPayDetailState extends State<OrderPayDetail> {
                 steps: [
                   Step(
                       title: const Text("Đặt hàng thành công"),
-                      content: const Text("Đơn hàng chưa được đặt thành công"),
+                      content: const Text("Đơn hàng chưa được xác nhận"),
                     isActive: currentStep > 0,
                     state: currentStep > 0 ? StepState.complete : StepState.indexed,
                   ),
@@ -353,14 +410,39 @@ class _OrderPayDetailState extends State<OrderPayDetail> {
 
                   ),
                   Step(
-                      title: const Text("Đã giao"),
-                      content: const Text("Đơn hàng đã được giao đến cho bạn"),
+                    title: const Text("Đã giao"),
+                    content: const Text("Đơn hàng đã được giao đến cho bạn"),
                     isActive: currentStep >= 3,
                     state: currentStep >= 3 ? StepState.complete : StepState.indexed,
                   ),
+                  // Step(
+                  //     title: const Text("Đã giao"),
+                  //     content: const Text("Đơn hàng đã được giao đến cho bạn"),
+                  //   isActive: currentStep >= 4,
+                  //   state: currentStep >= 4 ? StepState.complete : StepState.indexed,
+                  // ),
                 ],
               ),
-            )
+            ),
+              const SizedBox(height: 30,),
+              widget.isAdmin == false && widget.payResponse.status == 0 ?
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                   children: [
+                     ElevatedButton(
+                      onPressed: () {
+                        _deleteCart(widget.payResponse.id);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppPalette.green3Color,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                        minimumSize: Size(300, 50),
+                      ),
+                      child: const Text('Hủy đơn hàng'),
+                ),
+                   ],
+                 ) :  const SizedBox.shrink(),
           ],
         ),
       ),

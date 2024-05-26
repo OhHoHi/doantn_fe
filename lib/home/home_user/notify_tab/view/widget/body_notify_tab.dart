@@ -182,16 +182,23 @@ class _BodyNotifyTabState extends State<BodyNotifyTab> {
     return Expanded(
       child:
           // chưa làm loadmore nên chưa lướt đuwocj
-            RefreshLoadmore(
-              isLastPage: false,
-              onRefresh: _refresh,
-              onLoadmore: _scrollListener,
+            SingleChildScrollView(
               child: ListView.builder(
-                padding: EdgeInsets.zero,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
                 itemCount: provider.listNotify.length,
                 shrinkWrap: true,
-                itemBuilder: (context, index) =>
-                    itemList(provider.listNotify[index], index),
+                itemBuilder: (context, index) {
+                  final reversedIndex = provider.listNotify.length - 1 - index; // Lấy chỉ số ngược lại
+                  return itemList(provider.listNotify[reversedIndex], index);
+
+                }
+
+                // itemBuilder: (context, index) {
+                //   final reversedIndex = paymentProvider.listOrderStatusNot1and3.length - 1 - index; // Lấy chỉ số ngược lại
+                //
+                //   return buildData(paymentProvider,paymentProvider.listOrderDisplay[index]);
+                // },
               ),
             )
     );

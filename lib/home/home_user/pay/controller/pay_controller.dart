@@ -28,7 +28,7 @@ class PaymentProvider extends BaseProvider<PayService> {
   late List<PayResponse> listOrderStatusNot1and3 = [];
 
   late List<PayResponse> listOrderDisplay = [];
-
+  late List<PayResponse> listOrderStatusLess0 = [];
 
 
   late List<OrderItemResponse> listOrderItem = [];
@@ -42,6 +42,8 @@ class PaymentProvider extends BaseProvider<PayService> {
 
   bool? checkAddOrder;
   bool? checkIncreaseStatus;
+  bool? checkDecreaseStatus;
+
 
   late int page = 0;
   late String sort = "id_desc";
@@ -528,7 +530,77 @@ class PaymentProvider extends BaseProvider<PayService> {
       });
     }
   }
+  Future<void> getListOrderAllStatusLess0() async {
+    resetStatus();
+    try {
+      startLoading(() {
+        statusListOrder = Status.loading;
+      });
+      listOrderStatusLess0 = await service.getOrdersWithStatusLess0();
+      if (listOrderStatusLess0.isNotEmpty) {
+        for (var order in listOrderStatusLess0) {
+          await getListOrderItem(order.id);
+        }
+        statusListOrder = Status.loaded;
+      } else {
+        statusListOrder = Status.noData;
+      }
+      finishLoading(() {
+        statusListOrder = Status.loaded;
+      });
+      if(listOrderStatusLess0.isEmpty){
+        receivedNoData(() {
+          statusListOrder = Status.noData;
+        });
+      }
+      else{
+        finishLoading(() {
+          statusListOrder = Status.loaded;
+        });
+      }
+    } on DioException catch (e) {
+      messagesError = e.message ?? 'Co loi he thong';
+      receivedError(() {
+        statusListOrder = Status.error;
+      });
+    }
+  }
+  Future<void> getListOrderStatusLess0WithUser(int userId) async {
+    resetStatus();
+    try {
+      startLoading(() {
+        statusListOrder = Status.loading;
+      });
+      listOrderStatusLess0 = await service.getOrdersWithStatusLess0WithUser(userId);
+      if (listOrderStatusLess0.isNotEmpty) {
+        for (var order in listOrderStatusLess0) {
+          await getListOrderItem(order.id);
+        }
+        statusListOrder = Status.loaded;
+      } else {
+        statusListOrder = Status.noData;
+      }
+      finishLoading(() {
+        statusListOrder = Status.loaded;
+      });
+      if(listOrderStatusLess0.isEmpty){
+        receivedNoData(() {
+          statusListOrder = Status.noData;
+        });
+      }
+      else{
+        finishLoading(() {
+          statusListOrder = Status.loaded;
+        });
+      }
 
+    } on DioException catch (e) {
+      messagesError = e.message ?? 'Co loi he thong';
+      receivedError(() {
+        statusListOrder = Status.error;
+      });
+    }
+  }
   Future<void> increaseStatus(int orderId) async {
     resetStatus();
     try {
@@ -556,7 +628,33 @@ class PaymentProvider extends BaseProvider<PayService> {
       //receivedError();
     }
   }
-
+  Future<void> decreaseStatus(int orderId) async {
+    resetStatus();
+    try {
+      startLoading(() {
+        statusListOrder = Status.loading;
+      });
+      //startLoading();
+      checkDecreaseStatus = await service.decreaseStatus(orderId);
+      if (checkIncreaseStatus == true) {
+        finishLoading(() {
+          statusListOrder = Status.loaded;
+        });
+        //  getListOrderAll();
+      }
+      else{
+        receivedError(() {
+          statusListOrder = Status.error;
+        });
+      }
+    } on DioException catch (e) {
+      messagesError = e.message ?? 'Co loi he thong';
+      receivedError(() {
+        statusListOrder = Status.error;
+      });
+      //receivedError();
+    }
+  }
   Future<void> getListOrderWithMonth() async {
     resetStatus();
     try {
