@@ -375,7 +375,7 @@ class _OrderPayDetailState extends State<OrderPayDetail> {
               child: Stepper(
                 currentStep: currentStep,
                 controlsBuilder: (context, detail) {
-                  if(widget.isAdmin == true  && currentStep < 4){
+                  if(widget.isAdmin == true  && currentStep < 3){
                     return ElevatedButton(
                       onPressed: () => changeOrderStatus( detail.currentStep, widget.payResponse.id),
                       style: ElevatedButton.styleFrom(

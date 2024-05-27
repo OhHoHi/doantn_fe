@@ -64,10 +64,10 @@ class AddressProvider extends BaseProvider<AddressService> {
             context: context,
             builder: (context) {
               return DialogBase(
-                title: 'Thông báo',
+                title: 'Thành công',
                 content: 'Thêm địa chỉ thành công',
-                icon: AppAssets.icoDefault,
-                button: true,
+                icon: AppAssets.icoSuccess,
+                button: false,
                 // function:(){
                 //   Navigator.push(
                 //     context,
@@ -86,10 +86,10 @@ class AddressProvider extends BaseProvider<AddressService> {
             context: context,
             builder: (context) {
               return DialogBase(
-                title: 'Thông báo',
+                title: 'Thất bại',
                 content: 'Thất bại',
                 icon: AppAssets.icoDefault,
-                button: true,
+                button: false,
               );
             });
       }
@@ -162,10 +162,10 @@ class AddressProvider extends BaseProvider<AddressService> {
             context: context,
             builder: (context) {
               return DialogBase(
-                title: 'Thông báo',
+                title: 'Thành công',
                 content: 'Sửa địa chỉ thành công',
-                icon: AppAssets.icoDefault,
-                button: true,
+                icon: AppAssets.icoSuccess,
+                button: false,
                 // function:(){
                 //   Navigator.push(
                 //     context,
@@ -184,10 +184,10 @@ class AddressProvider extends BaseProvider<AddressService> {
             context: context,
             builder: (context) {
               return DialogBase(
-                title: 'Thông báo',
+                title: 'Thất bại',
                 content: 'Thất bại',
-                icon: AppAssets.icoDefault,
-                button: true,
+                icon: AppAssets.icoFail,
+                button: false
               );
             });
       }
@@ -215,10 +215,10 @@ class AddressProvider extends BaseProvider<AddressService> {
             context: context,
             builder: (context) {
               return DialogBase(
-                title: 'Thông báo',
+                title: 'Thành công',
                 content: 'Xóa địa chỉ thành công',
-                icon: AppAssets.icoDefault,
-                button: true,
+                icon: AppAssets.icoSuccess,
+                button: false,
                 // function:(){
                 //   Navigator.push(
                 //     context,
@@ -238,10 +238,10 @@ class AddressProvider extends BaseProvider<AddressService> {
             context: context,
             builder: (context) {
               return DialogBase(
-                title: 'Thông báo',
-                content: 'Thất bại',
-                icon: AppAssets.icoDefault,
-                button: true,
+                title: 'Thất bại',
+                content: 'Địa chỉ này cần được giữ lại để lưu đơn hàng của bạn',
+                icon: AppAssets.icoFail,
+                button: false,
               );
             });
       }

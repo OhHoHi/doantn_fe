@@ -23,7 +23,7 @@ class LoginBodyWidget extends StatefulWidget {
 
 class _LoginBodyWidgetState extends State<LoginBodyWidget> {
   bool _showPass = false;
-  bool? _isChecked = false;
+  // bool? _isChecked = false;
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -53,7 +53,7 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
     setState(() {
       _usernameController.text = keyName ?? '';
       _passwordController.text = keyPassword ?? '';
-      _isChecked = true;
+      loginProvider.isChecked = true;
     });
   }
 
@@ -80,7 +80,7 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                   } else if (value == Status.loaded) {
                     WidgetsBinding.instance.addPostFrameCallback((_) async {
                       ProgressHUD.of(context)?.dismiss();
-                      if (_isChecked == true) {
+                      if (loginProvider.isChecked == true) {
                         SecureStorage().write('name', _usernameController.text);
                         SecureStorage()
                             .write('password', _passwordController.text);
@@ -290,11 +290,11 @@ class _LoginBodyWidgetState extends State<LoginBodyWidget> {
                                   borderRadius: BorderRadius.circular(
                                       5.0), // Điều chỉnh bán kính để bo tròn góc
                                 ),
-                                value: _isChecked,
-                                activeColor: ColorApp.backgroundColor,
+                                value: loginProvider.isChecked,
+                                activeColor: ColorApp.blue,
                                 onChanged: (bool? value) {
                                   setState(() {
-                                    _isChecked = value ?? false;
+                                    loginProvider.isChecked = value ?? false;
                                   });
                                 }),
                             const Text(

@@ -1,3 +1,4 @@
+import 'package:doan_tn/auth/login/controller/login_provider.dart';
 import 'package:doan_tn/auth/login/controller/user_provider.dart';
 import 'package:doan_tn/auth/login/model/user_response.dart';
 import 'package:doan_tn/auth/login/services/user_srvices.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../auth/login/model/login_response.dart';
 import '../../../auth/login/model/test_luu_user.dart';
+import '../../../auth/login/services/login_services.dart';
 import '../../../base/controler/base_provider.dart';
 import '../../../base/services/dio_option.dart';
 import '../../../base/widget/SkeletonTab.dart';
@@ -38,6 +40,9 @@ class ProfileTab extends StatelessWidget {
             create: (context) =>
                 AddressProvider(AddressService(DioOption().createDio())),
           ),
+          ChangeNotifierProvider(
+            create: (context) => LoginProvider(LoginServices(DioOption().createDio(addToken: false))),
+          ),
         ],
         child: const SkeletonTab(
             title: 'Thông tin người dùng',
@@ -57,6 +62,7 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
   late UserProvider userProvider;
   late AddressProvider addressProvider ;
   late LoginResponse user;
+  late LoginProvider loginProvider;
   AddressResponse? selectedAddress;
 
   @override
@@ -65,6 +71,7 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
     super.initState();
     addressProvider= Provider.of<AddressProvider>(context, listen: false);
     userProvider = Provider.of<UserProvider>(context, listen: false);
+    loginProvider = Provider.of<LoginProvider>(context, listen: false);
     user = TempUserStorage.currentUser!;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       userProvider.getUser(user.user.id);
@@ -109,13 +116,17 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
           PopupMenuButton(
             itemBuilder: (BuildContext context) => <PopupMenuEntry>[
               PopupMenuItem(
-                onTap: () {
+                onTap: () async {
+                  final resul = await
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => EditUser(userResponse: userProvider.userResponse , userProvider: userProvider,),
                     ),
                   );
+                  if(resul == true){
+                    userProvider.getUser(user.user.id);
+                  }
                 },
                 child: const Text('Chỉnh sửa thông tin'),
               ),
@@ -137,13 +148,17 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
                 child: const Text('Địa chỉ của tôi'),
               ),
               PopupMenuItem(
-                onTap: () {
-                  Navigator.push(
+                onTap: () async{
+                  final resul = await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ChangePassword(userResponse: userProvider.userResponse , userProvider: userProvider,),
                     ),
                   );
+                  if(resul == true){
+                    userProvider.getUser(user.user.id);
+
+                  }
                 },
                 child: const Text('Đổi mật khẩu'),
               ),
@@ -247,13 +262,17 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
               Text('Thông tin cá nhân' , style: AppStyles.nuntio_14_blue,),
               const SizedBox(width: 20,),
               IconButton(
-                onPressed: () {
+                onPressed: () async {
+                  final resul = await
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => EditUser(userResponse: userProvider.userResponse , userProvider: userProvider,),
                     ),
                   );
+                  if(resul == true){
+                    userProvider.getUser(user.user.id);
+                  }
                 },
                 icon: const Icon(
                   Icons.edit_note_rounded,
@@ -373,7 +392,9 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  loginProvider.logout(context);
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
@@ -417,18 +438,10 @@ class ChangePassword extends StatelessWidget {
               context: context,
               builder: (context) {
                 return DialogBase(
-                  title: 'Thông báo',
+                  title: 'Thành công',
                   content: 'Mật khẩu đã được đổi thành công',
-                  icon: AppAssets.icoDefault,
-                  button: true,
-                  function:(){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => UserPage(selectedIndex: 3),
-                      ),
-                    );
-                  } ,
+                  icon: AppAssets.icoSuccess,
+                  button: false,
                 );
               });
         } else {
@@ -439,10 +452,10 @@ class ChangePassword extends StatelessWidget {
               context: context,
               builder: (context) {
                 return DialogBase(
-                  title: 'Thông báo',
+                  title: 'Thất bại',
                   content: 'Mật khẩu cũ không chính xác',
-                  icon: AppAssets.icoDefault,
-                  button: true,
+                  icon: AppAssets.icoFail,
+                  button: false,
                 );
               });
         }
@@ -569,18 +582,18 @@ class _EditPasswordState extends State<EditUser> {
               context: context,
               builder: (context) {
                 return DialogBase(
-                  title: 'Thông báo',
+                  title: 'Thành công',
                   content: 'Thông tin đã được đổi thành công',
-                  icon: AppAssets.icoDefault,
-                  button: true,
-                  function:(){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => UserPage(selectedIndex: 3),
-                      ),
-                    );
-                  } ,
+                  icon: AppAssets.icoSuccess,
+                  button: false,
+                  // function:(){
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => UserPage(selectedIndex: 3),
+                  //     ),
+                  //   );
+                  // } ,
                 );
               });
         } else {
@@ -591,10 +604,10 @@ class _EditPasswordState extends State<EditUser> {
               context: context,
               builder: (context) {
                 return DialogBase(
-                  title: 'Thông báo',
+                  title: 'Thất bại',
                   content: 'Thay đổi thất bại',
-                  icon: AppAssets.icoDefault,
-                  button: true,
+                  icon: AppAssets.icoFail,
+                  button: false,
                 );
               });
         }

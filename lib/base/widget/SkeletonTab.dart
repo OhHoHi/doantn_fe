@@ -28,7 +28,7 @@ class SkeletonTab extends StatelessWidget {
     return Scaffold(
         //const Color(0xffCDF8C5)
       //backgroundColor: AppPalette.backgroundColor,
-      backgroundColor: isbg == null ? const Color(0xffCDF8C5) : Colors.white,
+      backgroundColor: isbg == null ? const Color(0xfffaebcc) : Colors.white,
       appBar: AppBar(
         backgroundColor: AppPalette.backgroundAppbarColor,
         surfaceTintColor: AppPalette.backgroundAppbarColor,

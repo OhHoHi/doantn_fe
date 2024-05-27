@@ -91,7 +91,7 @@ class _BodyUserPayState extends State<BodyUserPay> {
                 return DialogBase(
                   title: 'Thông báo',
                   content: 'Đơn hàng này bạn đã đặt rồi',
-                  icon: AppAssets.icoDefault,
+                  icon:AppAssets.icoNotice,
                   button: false,
                 );
               });
@@ -101,9 +101,9 @@ class _BodyUserPayState extends State<BodyUserPay> {
               context: context,
               builder: (context) {
                 return DialogBase(
-                  title: 'Thông báo',
+                  title: 'Thành công',
                   content: 'Bạn đã đặt hàng thành công',
-                  icon: AppAssets.icoDefault,
+                  icon: AppAssets.icoSuccess,
                   button: true,
                   function: () async {
                     final resul = await Navigator.push(
@@ -122,7 +122,13 @@ class _BodyUserPayState extends State<BodyUserPay> {
                     }
                   },
                 );
+
               });
+          setState(() {
+            setState(() {
+              widget.productPayList.clear();
+            });
+          });
         }
       } else {
         // ScaffoldMessenger.of(context).showSnackBar(
@@ -132,9 +138,9 @@ class _BodyUserPayState extends State<BodyUserPay> {
             context: context,
             builder: (context) {
               return DialogBase(
-                title: 'Thông báo',
+                title: 'Thất bại',
                 content: 'Đặt hàng chưa thành công hãy quay lại sau',
-                icon: AppAssets.icoDefault,
+                icon: AppAssets.icoFail,
                 button: true,
               );
             });

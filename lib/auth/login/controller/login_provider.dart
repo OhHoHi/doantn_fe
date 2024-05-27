@@ -9,6 +9,9 @@ import '../model/test_luu_user.dart';
 import '../services/login_services.dart';
 import 'package:dio/dio.dart';
 
+import '../services/secure_storage.dart';
+import '../view/login_screen.dart';
+
 class LoginProvider extends BaseProvider<LoginServices> {
   LoginProvider(LoginServices service) : super(service);
   LoginResponse? _user;
@@ -61,5 +64,22 @@ class LoginProvider extends BaseProvider<LoginServices> {
             );
           });
     }
+  }
+
+  bool? isChecked = false;
+  Future<void> logout(BuildContext context) async {
+
+    if(isChecked == true){
+      // Xóa thông tin người dùng khỏi SecureStorage
+      await SecureStorage().delete('name');
+      await SecureStorage().delete('password');
+    }
+    // Chuyển hướng người dùng về màn hình đăng nhập
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+    );
+
+    // Thông báo cập nhật trạng thái (nếu cần)
+    notifyListeners();
   }
 }

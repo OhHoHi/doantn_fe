@@ -169,7 +169,7 @@ class _BodyAddressState extends State<BodyAddress> {
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppPalette.green3Color,
+              backgroundColor: AppPalette.buttonColor,
               foregroundColor: Colors.white,
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(25))),

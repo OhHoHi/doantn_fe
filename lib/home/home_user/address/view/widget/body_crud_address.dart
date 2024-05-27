@@ -249,7 +249,7 @@ class _BodyAddressState extends State<BodyCRUDAddress> {
                     user.user.id);
               } : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppPalette.green3Color,
+                backgroundColor: AppPalette.buttonColor,
                 foregroundColor: Colors.white,
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(25))),
@@ -266,7 +266,7 @@ class _BodyAddressState extends State<BodyCRUDAddress> {
                     addressProvider.deleteAddress(context, widget.addressResponse!.id, user.user.id);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppPalette.green3Color,
+                    backgroundColor: AppPalette.buttonColor,
                     foregroundColor: Colors.white,
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(25))),
@@ -292,7 +292,7 @@ class _BodyAddressState extends State<BodyCRUDAddress> {
                         );
                   } : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppPalette.green3Color,
+                    backgroundColor: AppPalette.buttonColor,
                     foregroundColor: Colors.white,
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(25))),

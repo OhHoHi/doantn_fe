@@ -7,7 +7,7 @@ class ColorApp {
   static const Color subTextColor = Color(0xff928E85);
   static const Color textColorPrimary = Color(0xff00313E);
   static const Color startColor = Color(0xffE52A2A);
-  static const Color backgroundColor = Color(0xffCDF8C5);
+  static const Color backgroundColor = Color(0xfffaebcc);
 
   static const Color hintTextColor = Color(0xffB7C0CD);
   static const Color textFieltColor = Color(0xffF6F6F6);

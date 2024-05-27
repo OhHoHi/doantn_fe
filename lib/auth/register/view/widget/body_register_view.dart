@@ -5,6 +5,7 @@ import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:provider/provider.dart';
 import '../../../../base/controler/base_provider.dart';
 import '../../../../values/apppalette.dart';
+import '../../../../values/colors.dart';
 import '../../../login/view/widget/app_bar_login_widget.dart';
 
 class BodyRegister extends StatefulWidget {
@@ -89,7 +90,6 @@ class _BodyRegisterState extends State<BodyRegister> {
         padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
               const SizedBox(height: 50),
@@ -100,6 +100,7 @@ class _BodyRegisterState extends State<BodyRegister> {
                 color: Colors.white,
                 margin: const EdgeInsets.all(10),
                 child: TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: _fullNameController,
                   maxLines: 1,
                   decoration: const InputDecoration(
@@ -124,6 +125,7 @@ class _BodyRegisterState extends State<BodyRegister> {
                 color: Colors.white,
                 margin: const EdgeInsets.all(10),
                 child: TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: _emailController,
                   maxLines: 1,
                   decoration: const InputDecoration(
@@ -151,6 +153,7 @@ class _BodyRegisterState extends State<BodyRegister> {
                 color: Colors.white,
                 margin: const EdgeInsets.all(10),
                 child: TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: _userNameController,
                   maxLines: 1,
                   decoration: const InputDecoration(
@@ -175,6 +178,7 @@ class _BodyRegisterState extends State<BodyRegister> {
                 color: Colors.white,
                 margin: const EdgeInsets.all(10),
                 child: TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: _passwordController,
                   maxLines: 1,
                   obscureText: true,
@@ -197,7 +201,7 @@ class _BodyRegisterState extends State<BodyRegister> {
               ElevatedButton(
                 onPressed: () => validateAndRegister(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppPalette.green3Color,
+                  backgroundColor: ColorApp.buttonColor,
                   foregroundColor: Colors.white,
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(15)),

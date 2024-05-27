@@ -16,4 +16,6 @@ class AppPalette {
   static const Color textColorRed = Color(0xFFFF5252);
   static const Color thinTextColor = Color(0xFF9B9B9B);
   static const Color errorColor = Color(0xFFFF5252);
+  static const Color buttonColor = Color(0xffEC8D21);
+
 }

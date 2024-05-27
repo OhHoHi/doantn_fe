@@ -41,7 +41,7 @@ class RegisterProvider extends BaseProvider<RegisterService>{
               return DialogBase(
                 title: 'Thông báo',
                 content: 'Đăng ký thành công',
-                icon: AppAssets.icoDefault,
+                icon: AppAssets.icoSuccess,
                 button: true,
               );
             });
@@ -55,9 +55,9 @@ class RegisterProvider extends BaseProvider<RegisterService>{
             builder: (context) {
               return DialogBase(
                 title: 'Thông báo',
-                content:'Đã có lỗi sảy ra , hãy check lại',
-                icon: AppAssets.icoDefault,
-                button: true,
+                content:'Email này đã được sử dụng để đăng ký',
+                icon: AppAssets.icoFail,
+                button: false,
               );
             });
       }

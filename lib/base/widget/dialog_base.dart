@@ -1,3 +1,4 @@
+import 'package:doan_tn/values/styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/material.dart';
@@ -27,12 +28,13 @@ class DialogBase extends StatelessWidget {
                 foregroundColor: ColorApp.buttonColor,
                 backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
+                  side: const BorderSide(color: ColorApp.buttonColor, width:1), // Đường viền của button
                   borderRadius: BorderRadius.circular(8),
                   // bo góc của button
                 ),
               ),
-              child: const Text(
-                "Xong",
+              child:  const Text(
+                "Đóng",
                 style: TextStyle(
                     fontSize: 14,
                     fontFamily: 'Open Sans',
@@ -91,10 +93,7 @@ class DialogBase extends StatelessWidget {
       title:  Text(
         title ?? 'Thông báo',
         textAlign: TextAlign.center,
-        style: const TextStyle(
-            fontSize: 18,
-            color: ColorApp.textColorPrimary,
-            fontWeight: FontWeight.bold),
+        style: AppStyles.nuntio_18
       ),
       content: SizedBox(
         width: 335,
