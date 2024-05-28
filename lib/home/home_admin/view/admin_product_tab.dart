@@ -1,4 +1,3 @@
-
 import 'package:doan_tn/base/widget/SkeletonTab.dart';
 import 'package:doan_tn/base/widget/appbar_widget.dart';
 import 'package:doan_tn/home/controller/product_provider.dart';
@@ -18,21 +17,23 @@ class AdminProductTab extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context)=>ProductProvider(ProductService(DioOption().createDio())),
+          create: (context) =>
+              ProductProvider(ProductService(DioOption().createDio())),
         ),
       ],
       child: SkeletonTab(
         title: 'Trang chủ admin',
         bodyWidgets: const BodyAdminProductTab(),
-        floatingButton: FloatingActionButton(onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => CrudProductScreen(),
-            ),
-          );
-          //_navigatorToProductCrudPage(context);
-        },
-          child:const Icon(
+        floatingButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => CrudProductScreen(),
+              ),
+            );
+            //_navigatorToProductCrudPage(context);
+          },
+          child: const Icon(
             Icons.add,
             size: 25,
           ),

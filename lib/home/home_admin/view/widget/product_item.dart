@@ -7,7 +7,9 @@ import 'package:provider/provider.dart';
 import '../../../../auth/login/model/login_response.dart';
 import '../../../../auth/login/model/test_luu_user.dart';
 import '../../../../base/controler/base_provider.dart';
+import '../../../../base/widget/dialog_base.dart';
 import '../../../../values/apppalette.dart';
+import '../../../../values/assets.dart';
 import '../../../controller/product_provider.dart';
 import '../crud_product_tab.dart';
 import 'package:intl/intl.dart';
@@ -84,10 +86,15 @@ class _ProductCardState extends State<ProductCard> {
         borderRadius: const BorderRadius.all(Radius.circular(25)),
         onTap: ()async  {
           await widget.productProvider.getImagesForProduct(widget.product);
+          final resul = await
           Navigator.of(context).push(MaterialPageRoute(
               builder: (_) => ProductDetailScreen(
               productProvider: widget.productProvider, product: widget.product, isAdmin: widget.isAdmin,
               )));
+          if(resul == true){
+            widget.productProvider.resetPage();
+            widget.productProvider.getListProduct();
+          }
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
@@ -190,10 +197,24 @@ class _ProductCardState extends State<ProductCard> {
                   )
                       : IconButton(
                     onPressed: () {
-                      _addCart(user.user.id, widget.product.id, 1);
-                      setState(() {
-                        isInCart = true; // Cập nhật lại trạng thái khi thêm vào giỏ hàng thành công
-                      });
+                      if(widget.product.status == "Còn hàng"){
+                        _addCart(user.user.id, widget.product.id, 1);
+                        setState(() {
+                          isInCart = true; // Cập nhật lại trạng thái khi thêm vào giỏ hàng thành công
+                        });
+                      }
+                      else{
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return DialogBase(
+                                title: 'Thất bại',
+                                content: 'Sản phẩm này tạm thời hết hàng',
+                                icon: AppAssets.icoFail,
+                                button: false,
+                              );
+                            });
+                      }
                     },
                     icon: const Icon(Icons.add_shopping_cart_rounded, size: 20),
                   ),

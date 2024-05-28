@@ -28,7 +28,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
   late BrandProvider brandProvider;
 
   //FocusNode _nameFocusNode = FocusNode();
-
+ String? _selectedStatus;
   @override
   void initState() {
     // TODO: implement initState
@@ -48,7 +48,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
       }
 
 
-      _statusController.text = widget.productResponse!.status;
+      _selectedStatus = widget.productResponse!.status;
 
       _colorController.text = widget.productResponse!.color;
 
@@ -165,7 +165,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
       _isDescriptionEmpty = _descriptionController.text.isEmpty;
       _isPriceEmpty = _priceController.text.isEmpty;
       _isBrandsNameEmpty = _brandsNameController.text.isEmpty;
-      _isStatusEmpty = _statusController.text.isEmpty;
+      _isStatusEmpty = _selectedStatus!.isEmpty;
       _isColorEmpty = _colorController.text.isEmpty;
       _isChatLieuKhungVotEmpty = _chatLieuKhungVotController.text.isEmpty;
       _isChatLieuThanVotEmpty = _chatLieuThanVotController.text.isEmpty;
@@ -192,7 +192,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
         _images,
         int.tryParse(_priceController.text) ?? 0,
         _brandsNameController.text,
-        _statusController.text,
+        _selectedStatus ?? "",
         _colorController.text,
         _chatLieuKhungVotController.text,
         _chatLieuThanVotController.text,
@@ -216,9 +216,9 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
             context: context,
             builder: (context) {
               return DialogBase(
-                title: 'Thông báo',
+                title: 'Thành công',
                 content: 'Đã thêm sản phẩm thành công',
-                icon: AppAssets.icoDefault,
+                icon: AppAssets.icoSuccess,
                 button: true,
                 function:(){
                   Navigator.push(
@@ -238,10 +238,10 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
             context: context,
             builder: (context) {
               return DialogBase(
-                title: 'Thông báo',
+                title: 'Thất bại',
                 content: 'Thêm sản phẩm thất bại',
-                icon: AppAssets.icoDefault,
-                button: true,
+                icon: AppAssets.icoFail,
+                button: false,
 
               );
             });
@@ -270,7 +270,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
       _isDescriptionEmpty = _descriptionController.text.isEmpty;
       _isPriceEmpty = _priceController.text.isEmpty;
       _isBrandsNameEmpty = _brandsNameController.text.isEmpty;
-      _isStatusEmpty = _statusController.text.isEmpty;
+      _isStatusEmpty = _selectedStatus!.isEmpty;
       _isColorEmpty = _colorController.text.isEmpty;
       _isChatLieuKhungVotEmpty = _chatLieuKhungVotController.text.isEmpty;
       _isChatLieuThanVotEmpty = _chatLieuThanVotController.text.isEmpty;
@@ -296,7 +296,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
           _descriptionController.text,
           int.tryParse(_priceController.text) ?? 0,
           _brandsNameController.text,
-          _statusController.text,
+          _selectedStatus ?? "",
           _colorController.text,
           _chatLieuKhungVotController.text,
           _chatLieuThanVotController.text,
@@ -322,9 +322,9 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
             context: context,
             builder: (context) {
               return DialogBase(
-                title: 'Thông báo',
+                title: 'Thành công',
                 content: 'Đã SỬA sản phẩm thành công',
-                icon: AppAssets.icoDefault,
+                icon: AppAssets.icoSuccess,
                 button: true,
                 function:(){
                   Navigator.push(
@@ -344,9 +344,9 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
             context: context,
             builder: (context) {
               return DialogBase(
-                title: 'Thông báo',
+                title: 'Thất bại',
                 content: 'SỬA sản phẩm thất bại',
-                icon: AppAssets.icoDefault,
+                icon: AppAssets.icoFail,
                 button: true,
               );
             });
@@ -612,21 +612,49 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
             //           hintStyle: TextStyle(color: AppPalette.thinTextColor)),
             //     ),
             // ),
+            // Card(
+            //   shape: const RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.all(Radius.circular(25)),
+            //   ),
+            //   color: Colors.white,
+            //   margin: const EdgeInsets.all(10),
+            //   child: TextField(
+            //     maxLines: 1,
+            //     controller: _statusController,
+            //     decoration: const InputDecoration(
+            //         border: InputBorder.none,
+            //         contentPadding: EdgeInsets.all(15),
+            //         labelStyle: TextStyle(color: AppPalette.textColor),
+            //         hintText: 'Trạng thái',
+            //         hintStyle: TextStyle(color: AppPalette.thinTextColor)),
+            //   ),
+            // ),
             Card(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(25)),
               ),
               color: Colors.white,
               margin: const EdgeInsets.all(10),
-              child: TextField(
-                maxLines: 1,
-                controller: _statusController,
+              child: DropdownButtonFormField<String>(
+                value: _selectedStatus,
+                onChanged: (newValue) {
+                  setState(() {
+                    _selectedStatus = newValue;
+                  });
+                },
+                items: <String>['Còn hàng', 'Hết hàng'].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value , style: const TextStyle(color: Colors.red)),
+                  );
+                }).toList(),
                 decoration: const InputDecoration(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.all(15),
                     labelStyle: TextStyle(color: AppPalette.textColor),
                     hintText: 'Trạng thái',
-                    hintStyle: TextStyle(color: AppPalette.thinTextColor)),
+                    hintStyle: TextStyle(color: AppPalette.thinTextColor)
+                ),
               ),
             ),
             Card(

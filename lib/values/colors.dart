@@ -11,7 +11,7 @@ class ColorApp {
 
   static const Color hintTextColor = Color(0xffB7C0CD);
   static const Color textFieltColor = Color(0xffF6F6F6);
-  static const Color buttonColor = Color(0xffDBA410);
+  static const Color buttonColor = Color(0xffffcb4e);
   static const Color Nude = Color(0xffF8E4A5);
   static const Color lightBrown = Color(0xffDCAC26);
   static const Color Brown = Color(0xffB58519);

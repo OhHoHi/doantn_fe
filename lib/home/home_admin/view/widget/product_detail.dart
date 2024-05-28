@@ -110,9 +110,23 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>with TickerPro
                         onPressed: () {
                           widget.productProvider.deleteProduct(widget.product.id);
                           Navigator.of(context).pop(); // Đóng hộp thoại
-                          setState(() {
-                            isProductDeleted = true; // Đánh dấu là đã xóa sản phẩm
-                          });
+                          if(widget.productProvider.checkDelete == true){
+                            setState(() {
+                              isProductDeleted = true; // Đánh dấu là đã xóa sản phẩm
+                            });
+                          }
+                          else{
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return DialogBase(
+                                    title: 'Thất bại',
+                                    content: 'Sản phẩm này đã được lưu trong đơn hàng của nhiều khách hàng',
+                                    icon: AppAssets.icoFail,
+                                    button: false,
+                                  );
+                                });
+                          }
                         },
                         child: const Text("Xác nhận"),
                       ),
