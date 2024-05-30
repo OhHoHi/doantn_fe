@@ -39,6 +39,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       brandProvider.getListBrand();
     });
+    _selectedStatus = "Còn hàng";
     if (widget.productResponse != null) {
       _nameController.text = widget.productResponse!.name;
       _descriptionController.text = widget.productResponse!.description;
@@ -165,7 +166,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
       _isDescriptionEmpty = _descriptionController.text.isEmpty;
       _isPriceEmpty = _priceController.text.isEmpty;
       _isBrandsNameEmpty = _brandsNameController.text.isEmpty;
-      _isStatusEmpty = _selectedStatus!.isEmpty;
+     // _isStatusEmpty = _selectedStatus!.isEmpty;
       _isColorEmpty = _colorController.text.isEmpty;
       _isChatLieuKhungVotEmpty = _chatLieuKhungVotController.text.isEmpty;
       _isChatLieuThanVotEmpty = _chatLieuThanVotController.text.isEmpty;
@@ -179,7 +180,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
       _isNoiDungChoiEmpty = _noiDungChoiController.text.isEmpty;
     });
 
-    if (_isNameEmpty || _isDescriptionEmpty || _isPriceEmpty || _isBrandsNameEmpty || _isStatusEmpty || _isColorEmpty || _isChatLieuKhungVotEmpty || _isChatLieuThanVotEmpty || _isTrongLuongEmpty || _isDoCungEmpty || _isDiemCanBangEmpty || _isChieuDaiVotEmpty || _isMucCangToiDaEmpty || _isChuViCanCamEmpty || _isTrinhDoChoiEmpty || _isNoiDungChoiEmpty || _images.isEmpty) {
+    if (_isNameEmpty || _isDescriptionEmpty || _isPriceEmpty || _isBrandsNameEmpty || _isColorEmpty || _isChatLieuKhungVotEmpty || _isChatLieuThanVotEmpty || _isTrongLuongEmpty || _isDoCungEmpty || _isDiemCanBangEmpty || _isChieuDaiVotEmpty || _isMucCangToiDaEmpty || _isChuViCanCamEmpty || _isTrinhDoChoiEmpty || _isNoiDungChoiEmpty || _images.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin')),
       );
@@ -219,7 +220,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
                 title: 'Thành công',
                 content: 'Đã thêm sản phẩm thành công',
                 icon: AppAssets.icoSuccess,
-                button: true,
+                button: false,
                 function:(){
                   Navigator.push(
                     context,
@@ -317,7 +318,7 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
         // ScaffoldMessenger.of(context).showSnackBar(
         //   SnackBar(content: Text('Product added successfully')),
         // );
-
+        Navigator.pop(context , true);
         showDialog(
             context: context,
             builder: (context) {
@@ -325,15 +326,10 @@ class _BodyHomeViewState extends State<BodyAddProduct> {
                 title: 'Thành công',
                 content: 'Đã SỬA sản phẩm thành công',
                 icon: AppAssets.icoSuccess,
-                button: true,
-                function:(){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AdminPage(selectedIndex: 0),
-                    ),
-                  );
-                } ,
+                button: false,
+                // function:(){
+                //   Navigator.pop(context , true);
+                // } ,
               );
             });
       } else {

@@ -41,7 +41,77 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>with TickerPro
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     user = TempUserStorage.currentUser!;
-
+    widget.productProvider.checkDelete = false ;
+  }
+  Future<void> _deleteProduct(int id) async {
+    try {
+      await widget.productProvider.deleteProduct(widget.product.id);
+      if(widget.productProvider.checkDelete == true){
+        setState(() {
+          isProductDeleted = true; // Đánh dấu là đã xóa sản phẩm
+        });
+      }
+      if(widget.productProvider.checkDelete == false){
+        showDialog(
+            context: context,
+            builder: (context) {
+              return DialogBase(
+                title: 'Thất bại',
+                content: 'Sản phẩm này đã được lưu trong đơn hàng của nhiều khách hàng',
+                icon: AppAssets.icoFail,
+                button: false,
+              );
+            });
+      }
+      // if (paymentProvider.checkDecreaseStatus == true) {
+      //   showDialog(
+      //       context: context,
+      //       builder: (context) {
+      //         return DialogBase(
+      //           title: 'Thông báo',
+      //           content: 'Bạn đã hủy đơn hàng thành công',
+      //           icon: AppAssets.icoDefault,
+      //           button: true,
+      //           // function:(){
+      //           //   Navigator.push(
+      //           //     context,
+      //           //     MaterialPageRoute(
+      //           //       builder: (context) => OrderPayScreen(isAdmin: false , initialTabIndex: 0,),
+      //           //     ),
+      //           //   );
+      //           // } ,
+      //         );
+      //       });
+      // } else {
+      //   // ScaffoldMessenger.of(context).showSnackBar(
+      //   //   SnackBar(content: Text('Failed to add product')),
+      //   // );
+      //   showDialog(
+      //       context: context,
+      //       builder: (context) {
+      //         return DialogBase(
+      //           title: 'Thông báo',
+      //           content: 'Có lỗi gì đó sảy ra',
+      //           icon: AppAssets.icoDefault,
+      //           button: true,
+      //         );
+      //       });
+      // }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete product')),
+      );
+      // showDialog(
+      //     context: context,
+      //     builder: (context) {
+      //       return DialogBase(
+      //         title: 'Thông báo',
+      //         content: 'Thêm sản phẩm thất bại',
+      //         icon: AppAssets.icoDefault,
+      //         button: true,
+      //       );
+      //     });
+    }
   }
   @override
   void dispose() {
@@ -108,25 +178,27 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>with TickerPro
                       ),
                       TextButton(
                         onPressed: () {
-                          widget.productProvider.deleteProduct(widget.product.id);
-                          Navigator.of(context).pop(); // Đóng hộp thoại
-                          if(widget.productProvider.checkDelete == true){
-                            setState(() {
-                              isProductDeleted = true; // Đánh dấu là đã xóa sản phẩm
-                            });
-                          }
-                          else{
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return DialogBase(
-                                    title: 'Thất bại',
-                                    content: 'Sản phẩm này đã được lưu trong đơn hàng của nhiều khách hàng',
-                                    icon: AppAssets.icoFail,
-                                    button: false,
-                                  );
-                                });
-                          }
+                          _deleteProduct(widget.product.id);
+                          Navigator.of(context).pop();
+                          // widget.productProvider.deleteProduct(widget.product.id);
+                          // Navigator.of(context).pop(); // Đóng hộp thoại
+                          // if(widget.productProvider.checkDelete == true){
+                          //   setState(() {
+                          //     isProductDeleted = true; // Đánh dấu là đã xóa sản phẩm
+                          //   });
+                          // }
+                          // if(widget.productProvider.checkDelete == false){
+                          //   showDialog(
+                          //       context: context,
+                          //       builder: (context) {
+                          //         return DialogBase(
+                          //           title: 'Thất bại',
+                          //           content: 'Sản phẩm này đã được lưu trong đơn hàng của nhiều khách hàng',
+                          //           icon: AppAssets.icoFail,
+                          //           button: false,
+                          //         );
+                          //       });
+                          // }
                         },
                         child: const Text("Xác nhận"),
                       ),
@@ -232,7 +304,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>with TickerPro
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppPalette.green3Color,
+                  backgroundColor: AppPalette.buttonColor,
                   foregroundColor: Colors.white,
                   shape: const RoundedRectangleBorder(
                       borderRadius:

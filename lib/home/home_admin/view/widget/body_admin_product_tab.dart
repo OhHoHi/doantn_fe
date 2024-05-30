@@ -40,7 +40,7 @@ class _BodyHomeViewState extends State<BodyAdminProductTab> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ColorApp.backgroundColor,
+      //color: ColorApp.backgroundColor,
       child: Selector<ProductProvider, Status>(builder: (context, value, child) {
         if (value == Status.loading) {
           WidgetsBinding.instance.addPostFrameCallback((_) {

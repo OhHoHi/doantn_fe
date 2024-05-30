@@ -1,9 +1,11 @@
+import 'package:doan_tn/auth/login/model/login_response.dart';
 import 'package:doan_tn/home/controller/brand_controller.dart';
 import 'package:doan_tn/home/controller/product_provider.dart';
 import 'package:doan_tn/home/home_user/search_tab/controller/search_provider.dart';
 import 'package:doan_tn/home/home_user/search_tab/view/widget/search_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../../../auth/login/model/test_luu_user.dart';
 import '../../../../../base/controler/base_provider.dart';
 import '../../../../../values/colors.dart';
 import '../../../../../values/styles.dart';
@@ -24,7 +26,7 @@ class _BodyUserSearchTabState extends State<BodyUserSearchTab> {
   late ProductProvider productProvider;
   // late SearchProvider searchProvider;
   final ScrollController scrollController = ScrollController();
-
+  late LoginResponse user;
 
   @override
   void initState() {
@@ -33,6 +35,7 @@ class _BodyUserSearchTabState extends State<BodyUserSearchTab> {
     productProvider = Provider.of<ProductProvider>(context, listen: false);
     brandProvider = Provider.of<BrandProvider>(context, listen: false);
     // searchProvider = Provider.of<SearchProvider>(context, listen: false);
+    user = TempUserStorage.currentUser!;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       productProvider.resetPage();
       productProvider.resetPageSearch();
@@ -172,11 +175,17 @@ class _BodyUserSearchTabState extends State<BodyUserSearchTab> {
                           mainAxisExtent: 260),
                       itemCount: productProvider.listSearchDisplay.length,
                       itemBuilder: (context, index) {
-                        return ProductCard(
+                        return
+                        user.user.roles.first.name == "ROLE_ADMIN" ?
+                         ProductCard(
+                          product:productProvider.listSearchDisplay[index],
+                          isAdmin: true,
+                          productProvider: productProvider,
+                        ) :ProductCard(
                           product:productProvider.listSearchDisplay[index],
                           isAdmin: false,
                           productProvider: productProvider,
-                        );
+                        ) ;
                       },
                     ),
                   ]),

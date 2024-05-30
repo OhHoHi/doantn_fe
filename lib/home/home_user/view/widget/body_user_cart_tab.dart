@@ -64,10 +64,10 @@ class _UserCartTabState extends State<BodyUserCartTab> {
             context: context,
             builder: (context) {
               return DialogBase(
-                title: 'Thông báo',
+                title: 'Thành công',
                 content: 'Đã XÓA sản phẩm khỏi giỏ hàng thành công',
-                icon: AppAssets.icoDefault,
-                button: true,
+                icon: AppAssets.icoSuccess,
+                button: false,
                 function:(){
                   Navigator.push(
                     context,
@@ -86,9 +86,9 @@ class _UserCartTabState extends State<BodyUserCartTab> {
             context: context,
             builder: (context) {
               return DialogBase(
-                title: 'Thông báo',
+                title: 'Thất bại',
                 content: 'XÓA Thất bại',
-                icon: AppAssets.icoDefault,
+                icon: AppAssets.icoFail,
                 button: true,
               );
             });
@@ -486,7 +486,7 @@ class BottomSheetCart extends StatelessWidget {
 
               },
               style: ElevatedButton.styleFrom(
-                  backgroundColor: AppPalette.green3Color,
+                  backgroundColor: AppPalette.buttonColor,
                   foregroundColor: Colors.white,
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(25))),

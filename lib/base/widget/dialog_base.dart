@@ -66,9 +66,7 @@ class DialogBase extends StatelessWidget {
       actionsWidget.add(
         Center(
           child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: function ?? (){Navigator.pop(context);},
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(150, 40),
                 foregroundColor: Colors.white,

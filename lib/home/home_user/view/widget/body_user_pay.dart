@@ -518,6 +518,7 @@ class _BodyUserPayState extends State<BodyUserPay> {
         addressProvider: addressProvider,
         user: user,
       ),
+     // isbg: true,
     );
   }
 }
@@ -595,7 +596,7 @@ class BottomSheetPay extends StatelessWidget {
                 }
               },
               style: ElevatedButton.styleFrom(
-                  backgroundColor: AppPalette.green3Color,
+                  backgroundColor: AppPalette.buttonColor,
                   foregroundColor: Colors.white,
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(0))),

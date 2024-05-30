@@ -3,6 +3,7 @@ import 'package:doan_tn/home/home_admin/view/profile_tab.dart';
 import 'package:flutter/material.dart';
 import '../../../values/apppalette.dart';
 import '../../home_user/pay/view/order_pay_screen.dart';
+import '../../home_user/search_tab/view/user_search_tab.dart';
 import 'admin_product_tab.dart';
 
 class AdminPage extends StatefulWidget {
@@ -18,8 +19,9 @@ class _AdminPageState extends State<AdminPage> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     const AdminProductTab(),
+    const UserSearchTab(),
     const ThongKeScreen(),
-    OrderPayScreen(initialTabIndex: 0 , isAdmin: true),
+    // OrderPayScreen(initialTabIndex: 0 , isAdmin: true),
     const ProfileTab(),
   ];
 
@@ -43,9 +45,11 @@ class _AdminPageState extends State<AdminPage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.area_chart), label: 'Thống kê'),
+              icon: Icon(Icons.search), label: 'Tìm kiếm'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.payment), label: 'Các đơn cần xác nhận'),
+              icon: Icon(Icons.area_chart), label: 'Thống kê'),
+          // BottomNavigationBarItem(
+          //     icon: Icon(Icons.payment), label: 'Các đơn cần xác nhận'),
           BottomNavigationBarItem(
               icon: Icon(Icons.account_circle), label: 'Người dùng'),
         ],

@@ -166,12 +166,16 @@ class _ProductCardState extends State<ProductCard> {
                   ),
                   const Spacer(),
                   IconButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
+                      onPressed: () async {
+                        final resul = await Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) => CrudProductScreen(productResponse: widget.product),
                           ),
                         );
+                        if(resul == true){
+                          widget.productProvider.resetPage();
+                          widget.productProvider.getListProduct();
+                        }
                       },
                       icon: const Icon(Icons.edit_rounded,
                           size: 20))
