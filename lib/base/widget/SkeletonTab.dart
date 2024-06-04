@@ -48,7 +48,7 @@ class SkeletonTab extends StatelessWidget {
             isAddress != null ?
             Navigator.pop(context) : Navigator.pop(context , true) ;
           },
-          color: Colors.white,
+          color: Colors.black,
         ) : const SizedBox(),
         actions: [
           actionsWidgets != null ? actionsWidgets! : const SizedBox(),

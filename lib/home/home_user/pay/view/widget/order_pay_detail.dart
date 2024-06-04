@@ -291,7 +291,7 @@ class _OrderPayDetailState extends State<OrderPayDetail> {
                                               height: 5,
                                             ),
                                             Text(
-                                              'x ${formatPrice1((paymentProvider.listOrderItem1[i].product.price * paymentProvider.listOrderItem1[i].quantity))}',
+                                              '${formatPrice1((paymentProvider.listOrderItem1[i].product.price * paymentProvider.listOrderItem1[i].quantity))}',
                                               style: AppStyles.nuntio1_14_red,
                                             ),
                                           ],
@@ -317,7 +317,7 @@ class _OrderPayDetailState extends State<OrderPayDetail> {
                         ),
                         const Spacer(),
                         Text(
-                          formatPrice(widget.payResponse.totalAmount),
+                          "${formatPrice(widget.payResponse.totalAmount)} vnđ",
                           style: AppStyles.nuntio1_20_red,
                         )
                       ],

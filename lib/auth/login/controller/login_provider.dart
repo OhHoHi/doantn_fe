@@ -57,10 +57,10 @@ class LoginProvider extends BaseProvider<LoginServices> {
           context: context,
           builder: (context) {
             return DialogBase(
-              title: 'Thông báo',
+              title: 'Thất bại',
               content: 'Thông tin tài khoản hoặc mật khẩu không chính xác',
-              icon: AppAssets.icoDefault,
-              button: true,
+              icon: AppAssets.icoFail,
+              button: false,
             );
           });
     }

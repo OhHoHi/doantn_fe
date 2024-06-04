@@ -35,11 +35,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>with TickerPro
   late final TabController _tabController;
   late LoginResponse user;
   late bool isInCart = false;
-
+  late PageController _pageController;
+  int _currentPage = 0;
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _pageController = PageController();
     user = TempUserStorage.currentUser!;
     widget.productProvider.checkDelete = false ;
   }
@@ -221,35 +223,66 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>with TickerPro
 
   }
   Widget _buildProductDetail(){
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            height: 350,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-            ),
-            child: PageView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: widget.productProvider.images[widget.product.id.toString()]!.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FullScreenImage(imageData:  widget.productProvider.images[widget.product.id.toString()]![index],),
-                      ),
-                    );
-                  },
-                  child: Image.memory(widget.productProvider.images[widget.product.id.toString()]![index],fit: BoxFit.cover),
-                );
-              },
-            ),
+    final images = widget.productProvider.images[widget.product.id.toString()]!;
+  return SingleChildScrollView(
+    padding: const EdgeInsets.symmetric(horizontal: 20),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          height: 350,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+                scrollDirection: Axis.horizontal,
+                itemCount: images.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FullScreenImage(
+                            imageData: images[index],
+                          ),
+                        ),
+                      );
+                    },
+                    child: Image.memory(
+                      images[index],
+                      fit: BoxFit.cover,
+                    ),
+                  );
+                },
+              ),
+              Positioned(
+                bottom: 10,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '${_currentPage + 1} / ${images.length}',
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
           const SizedBox(height: 25),
           Text(
             widget.product.name,

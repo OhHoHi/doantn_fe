@@ -38,7 +38,7 @@ class _AdminPageState extends State<AdminPage> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         iconSize: 30,
-        selectedItemColor: AppPalette.green3Color,
+        selectedItemColor: AppPalette.buttonColor,
         unselectedItemColor: AppPalette.thinTextColor,
         currentIndex:  widget.selectedIndex,
         onTap: _onItemTapped,

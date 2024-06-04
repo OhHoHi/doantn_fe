@@ -131,9 +131,11 @@ class _OrderStatus0State extends State<BodyOrderStatus0> {
   }
 
   Widget buildData(PaymentProvider paymentProvider, PayResponse payResponse) {
+
+
     final orderItems = paymentProvider.orderItemsMap[payResponse.id] ?? [];
     if (orderItems.isEmpty) {
-      return const SizedBox();
+      return const SizedBox.shrink();
     }
     final orderItem = orderItems.first; // Chỉ lấy item đầu tiên
     final images = paymentProvider.images[orderItem.product.id.toString()];

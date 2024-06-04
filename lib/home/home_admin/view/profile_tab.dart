@@ -629,7 +629,7 @@ class _EditPasswordState extends State<EditUser> {
       }
     }
     return SkeletonTab(
-        title: "Đổi mật khẩu",
+        title: "Chỉnh sửa thông tin",
         bodyWidgets: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
