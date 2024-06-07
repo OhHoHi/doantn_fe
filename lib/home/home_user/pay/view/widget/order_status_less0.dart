@@ -146,7 +146,7 @@ class _OrderStatusLess0State extends State<BodyOrderStatusLess0> {
             );
             if(resul == true) {
               widget.isAdmin == true ?
-              paymentProvider.getListOrderAllStatus0() :paymentProvider.getListOrderStatus0WithUser(user.user.id);
+              paymentProvider.getListOrderAllStatusLess0() :paymentProvider.getListOrderStatusLess0WithUser(user.user.id);
             }
           },
           child: Container(

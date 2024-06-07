@@ -20,6 +20,7 @@ import '../../../values/assets.dart';
 import '../../../values/styles.dart';
 import '../../home_user/address/controller/address_provider.dart';
 import '../../home_user/address/model/address_response.dart';
+import '../../home_user/address/view/address_crud_screen.dart';
 import '../../home_user/address/view/address_screen.dart';
 import '../../home_user/view/user_page.dart';
 
@@ -174,8 +175,7 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
               height: 150,
               width: 150,
               child: CircleAvatar(
-                backgroundImage: NetworkImage(
-                    "https://cdn-icons-png.flaticon.com/512/3607/3607444.png"),
+                backgroundImage: AssetImage('assets/images/avatar.png'),
               ),
             ),
           ),
@@ -193,10 +193,10 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
                     ),
                   );
                 },
-                child: const Column(
+                child:  Column(
                   children: [
-                    Icon(Icons.payment),
-                    Text('Các đơn cần xác nhận'),
+                    const Icon(Icons.payment),
+                    Text('Chờ xác nhận' , style: AppStyles.nuntio_14_black,),
                   ],
                 ),
               ) : InkWell(
@@ -208,14 +208,31 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
                     ),
                   );
                 },
-                child: const Column(
+                child:  Column(
                   children: [
-                    Icon(Icons.payment),
-                    Text('Chờ xác nhận'),
+                    const Icon(Icons.payment),
+                    Text('Chờ xác nhận', style: AppStyles.nuntio_14_black,),
                   ],
                 ),
               ),
               const SizedBox(width: 20,),
+              user.user.roles.first.name == "ROLE_ADMIN" ?
+              InkWell(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OrderPayScreen(isAdmin: true,initialTabIndex:  1),
+                    ),
+                  );
+                },
+                child:  Column(
+                  children: [
+                    const Icon(Icons.drive_eta_rounded),
+                    Text('Đã xác nhận', style: AppStyles.nuntio_14_black,),
+                  ],
+                ),
+              ) :
               InkWell(
                 onTap: (){
                   Navigator.push(
@@ -225,15 +242,31 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
                     ),
                   );
                 },
-                child: const Column(
+                child:  Column(
                   children: [
-                    Icon(Icons.drive_eta_rounded),
-                    Text('Đơn hàng của bạn'),
+                    const Icon(Icons.drive_eta_rounded),
+                    Text('Đơn hàng của bạn', style: AppStyles.nuntio_14_black,),
                   ],
                 ),
               ),
               const SizedBox(width: 20,),
+              user.user.roles.first.name == "ROLE_ADMIN" ?
               InkWell(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OrderPayScreen(isAdmin: true,initialTabIndex:  2),
+                    ),
+                  );
+                },
+                child:  Column(
+                  children: [
+                    const Icon(Icons.done_outline),
+                    Text('Đã giao' , style: AppStyles.nuntio_14_black,),
+                  ],
+                ),
+              ) :InkWell(
                 onTap: (){
                   Navigator.push(
                     context,
@@ -242,18 +275,17 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
                     ),
                   );
                 },
-                child: const Column(
+                child: Column(
                   children: [
-                    Icon(Icons.done_outline),
-                    Text('Đã giao'),
+                    const Icon(Icons.done_outline),
+                    Text('Đã giao', style: AppStyles.nuntio_14_black,),
                   ],
                 ),
-              ),
+              ) ,
             ],
           ),
           const Divider(
             thickness: 3,
-
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -352,13 +384,15 @@ class _BodyProfileTabState extends State<BodyProfileTab> {
             );
           } else {
             return ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder:(context) => AddressCRUDScreen()));
+              },
               style: ElevatedButton.styleFrom(
                   backgroundColor: AppPalette.green3Color,
                   foregroundColor: Colors.white,
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(25))),
-                  minimumSize: const Size(double.infinity, 40)),
+                  minimumSize: const Size(300, 40)),
               child: const Text('Tạo mới địa chỉ'),
             );
           }

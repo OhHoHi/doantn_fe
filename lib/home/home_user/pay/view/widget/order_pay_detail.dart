@@ -71,7 +71,7 @@ class _OrderPayDetailState extends State<OrderPayDetail> {
     return formatter.format(price);
   }
 
-  Future<void> _deleteCart(int id) async {
+  Future<void> _decreaseStatus(int id) async {
     try {
       await paymentProvider.decreaseStatus(id);
       if (paymentProvider.checkDecreaseStatus == true) {
@@ -372,7 +372,8 @@ class _OrderPayDetailState extends State<OrderPayDetail> {
                   color: Colors.black12,
                 ),
               ),
-              child: Stepper(
+              child: currentStep >= 0 ?
+              Stepper(
                 currentStep: currentStep,
                 controlsBuilder: (context, detail) {
                   if(widget.isAdmin == true  && currentStep < 3){
@@ -422,7 +423,9 @@ class _OrderPayDetailState extends State<OrderPayDetail> {
                   //   state: currentStep >= 4 ? StepState.complete : StepState.indexed,
                   // ),
                 ],
-              ),
+              ) :  const SizedBox(
+                child: Text("Đơn hàng này đã bị hủy", ),
+              ) , 
             ),
               const SizedBox(height: 30,),
               widget.isAdmin == false && widget.payResponse.status == 0 ?
@@ -431,7 +434,7 @@ class _OrderPayDetailState extends State<OrderPayDetail> {
                    children: [
                      ElevatedButton(
                       onPressed: () {
-                        _deleteCart(widget.payResponse.id);
+                        _decreaseStatus(widget.payResponse.id);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppPalette.green3Color,
@@ -442,7 +445,26 @@ class _OrderPayDetailState extends State<OrderPayDetail> {
                       child: const Text('Hủy đơn hàng'),
                 ),
                    ],
-                 ) :  const SizedBox.shrink(),
+                 ) :
+              widget.payResponse.status == 0 ?
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      _decreaseStatus(widget.payResponse.id);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppPalette.green3Color,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                      minimumSize: Size(300, 50),
+                    ),
+                    child: const Text('Từ chối đơn hàng'),
+                  ),
+                ],
+              ) :
+              const SizedBox.shrink() // Không hiển thị gì nếu status bằng 0
           ],
         ),
       ),

@@ -17,6 +17,7 @@ import '../../../../base/widget/dialog_base.dart';
 import '../../../../values/apppalette.dart';
 import '../../../../values/assets.dart';
 import '../../../controller/product_provider.dart';
+import '../../../home_admin/view/widget/product_detail.dart';
 
 class BodyUserCartTab extends StatefulWidget {
   const BodyUserCartTab({super.key});
@@ -272,15 +273,23 @@ class _UserCartTabState extends State<BodyUserCartTab> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          //height: 90,
-                          width: 175-39,
-                          child: Text(
-                            cartResponse.product.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                                fontSize: 16, color: AppPalette.textColor),
+                        InkWell(
+                          onTap: (){
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => ProductDetailScreen(
+                                  productProvider: productProvider, product: cartResponse.product, isAdmin: user.user.roles.first.name == "ROLE_ADMIN" ? true : false,
+                                )));
+                          },
+                          child: SizedBox(
+                            //height: 90,
+                            width: 175-39,
+                            child: Text(
+                              cartResponse.product.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                  fontSize: 16, color: AppPalette.textColor),
+                            ),
                           ),
                         ),
                         IconButton(

@@ -71,94 +71,173 @@ class _BodyUserPayState extends State<BodyUserPay> {
     });
   }
 
+  // Future<void> _addPay() async {
+  //   try {
+  //       await payProvider.addOrder(
+  //           user.user.id,
+  //           0,
+  //           widget.productProvider.totalAmountProvider,
+  //           selectedAddress?.id ?? addressProvider.listAddress.first.id,
+  //           widget.productPayList);
+  //     if (payProvider.checkAddOrder == true) {
+  //       // Xóa từng sản phẩm trong widget.productPayList bằng cách gọi hàm deleteCart
+  //       for (var product in widget.productPayList) {
+  //         await widget.productProvider.deleteCartPay(product.id);
+  //       }
+  //       if(widget.productPayList.isEmpty){
+  //         showDialog(
+  //             context: context,
+  //             builder: (context) {
+  //               return DialogBase(
+  //                 title: 'Thông báo',
+  //                 content: 'Đơn hàng này bạn đã đặt rồi',
+  //                 icon:AppAssets.icoNotice,
+  //                 button: false,
+  //               );
+  //             });
+  //       }
+  //       else{
+  //         showDialog(
+  //             context: context,
+  //             builder: (context) {
+  //               return DialogBase(
+  //                 title: 'Thành công',
+  //                 content: 'Bạn đã đặt hàng thành công',
+  //                 icon: AppAssets.icoSuccess,
+  //                 button: true,
+  //                 function: () async {
+  //                   final resul = await Navigator.push(
+  //                     context,
+  //                     MaterialPageRoute(
+  //                       builder: (context) =>
+  //                           OrderPayScreen(isAdmin: false, initialTabIndex: 0),
+  //                     ),
+  //                   );
+  //                   if (resul == true) {
+  //                     setState(() {
+  //                       setState(() {
+  //                         widget.productPayList.clear();
+  //                       });
+  //                     });
+  //                   }
+  //                 },
+  //               );
+  //
+  //             });
+  //         setState(() {
+  //           setState(() {
+  //             widget.productPayList.clear();
+  //           });
+  //         });
+  //       }
+  //     } else {
+  //       // ScaffoldMessenger.of(context).showSnackBar(
+  //       //   SnackBar(content: Text('Failed to add product')),
+  //       // );
+  //       showDialog(
+  //           context: context,
+  //           builder: (context) {
+  //             return DialogBase(
+  //               title: 'Thất bại',
+  //               content: 'Đặt hàng chưa thành công hãy quay lại sau',
+  //               icon: AppAssets.icoFail,
+  //               button: true,
+  //             );
+  //           });
+  //     }
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Đặt hàng thất bại')),
+  //     );
+  //     // showDialog(
+  //     //     context: context,
+  //     //     builder: (context) {
+  //     //       return DialogBase(
+  //     //         title: 'Thông báo',
+  //     //         content: 'Thêm sản phẩm thất bại',
+  //     //         icon: AppAssets.icoDefault,
+  //     //         button: true,
+  //     //       );
+  //     //     });
+  //   }
+  // }
   Future<void> _addPay() async {
     try {
-        await payProvider.addOrder(
-            user.user.id,
-            0,
-            widget.productProvider.totalAmountProvider,
-            selectedAddress?.id ?? addressProvider.listAddress.first.id,
-            widget.productPayList);
+      if (widget.productPayList.isEmpty) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return DialogBase(
+              title: 'Thông báo',
+              content: 'Ban vừa đặt đơn hàng này rồi',
+              icon: AppAssets.icoNotice,
+              button: false,
+            );
+          },
+        );
+        return; // Dừng thực hiện nếu danh sách sản phẩm trống
+      }
+
+      await payProvider.addOrder(
+        user.user.id,
+        0,
+        widget.productProvider.totalAmountProvider,
+        selectedAddress?.id ?? addressProvider.listAddress.first.id,
+        widget.productPayList,
+      );
+
       if (payProvider.checkAddOrder == true) {
         // Xóa từng sản phẩm trong widget.productPayList bằng cách gọi hàm deleteCart
         for (var product in widget.productPayList) {
           await widget.productProvider.deleteCartPay(product.id);
         }
-        if(widget.productPayList.isEmpty){
-          showDialog(
-              context: context,
-              builder: (context) {
-                return DialogBase(
-                  title: 'Thông báo',
-                  content: 'Đơn hàng này bạn đã đặt rồi',
-                  icon:AppAssets.icoNotice,
-                  button: false,
-                );
-              });
-        }
-        else{
-          showDialog(
-              context: context,
-              builder: (context) {
-                return DialogBase(
-                  title: 'Thành công',
-                  content: 'Bạn đã đặt hàng thành công',
-                  icon: AppAssets.icoSuccess,
-                  button: true,
-                  function: () async {
-                    final resul = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            OrderPayScreen(isAdmin: false, initialTabIndex: 0),
-                      ),
-                    );
-                    if (resul == true) {
-                      setState(() {
-                        setState(() {
-                          widget.productPayList.clear();
-                        });
-                      });
-                    }
-                  },
-                );
 
-              });
-          setState(() {
-            setState(() {
-              widget.productPayList.clear();
-            });
-          });
-        }
-      } else {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text('Failed to add product')),
-        // );
         showDialog(
-            context: context,
-            builder: (context) {
-              return DialogBase(
-                title: 'Thất bại',
-                content: 'Đặt hàng chưa thành công hãy quay lại sau',
-                icon: AppAssets.icoFail,
-                button: true,
-              );
-            });
+          context: context,
+          builder: (context) {
+            return DialogBase(
+              title: 'Thành công',
+              content: 'Bạn đã đặt hàng thành công',
+              icon: AppAssets.icoSuccess,
+              button: true,
+              function: () async {
+                final resul = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        OrderPayScreen(isAdmin: false, initialTabIndex: 0),
+                  ),
+                );
+                if (resul == true) {
+                  setState(() {
+                    widget.productPayList.clear();
+                  });
+                }
+              },
+            );
+          },
+        );
+
+        setState(() {
+          widget.productPayList.clear();
+        });
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return DialogBase(
+              title: 'Thất bại',
+              content: 'Đặt hàng chưa thành công, hãy thử lại sau',
+              icon: AppAssets.icoFail,
+              button: true,
+            );
+          },
+        );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Đặt hàng thất bại')),
       );
-      // showDialog(
-      //     context: context,
-      //     builder: (context) {
-      //       return DialogBase(
-      //         title: 'Thông báo',
-      //         content: 'Thêm sản phẩm thất bại',
-      //         icon: AppAssets.icoDefault,
-      //         button: true,
-      //       );
-      //     });
     }
   }
 
